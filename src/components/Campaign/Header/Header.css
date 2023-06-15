@@ -1,0 +1,10 @@
+.campaign-title {
+    display: flex;
+    align-items: flex-end;
+}
+
+.campaign-title h2 {
+    width: 100%;
+    text-align: right;
+    color: #ffffff;
+}
