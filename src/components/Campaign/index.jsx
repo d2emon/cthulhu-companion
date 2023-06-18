@@ -1,3 +1,4 @@
+import Data from './Data';
 import Header from './Header';
 import Nav from './Nav';
 
@@ -103,5 +104,6 @@ function Campaign({ children }) {
 
 Campaign.Header = Header;
 Campaign.Nav = Nav;
+Campaign.CampaignData = Data;
 
 export default Campaign;

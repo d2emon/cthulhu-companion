@@ -4,8 +4,6 @@ import { Counter } from '../../features/counter/Counter';
 import logo from './logo.svg';
 import './Game.css';
 import MainBar from '../../components/MainBar';
-import CampaignMain from '../../components/CampaignMain';
-import CampaignData from '../../components/CampaignData';
 import Campaign from '../../components/Campaign';
 
 const campaign = {
@@ -90,7 +88,7 @@ function Game() {
                     </Campaign>
                 </Col>
                 <Col lg={3}>
-                    <CampaignData />
+                    <Campaign.CampaignData />
                 </Col>
             </Row>
         </Container>

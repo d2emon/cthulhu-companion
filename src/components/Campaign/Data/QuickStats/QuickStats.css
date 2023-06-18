@@ -1,0 +1,26 @@
+.quick-stats {
+    font-size: 0.75em;
+    text-align: left;
+}
+
+.fans-counter {
+    background: rgba(125,125,125,0.3);
+    padding: 10px;
+    text-align: center;
+    display: inline-block;
+    width: 100%;
+    height: 54px;
+    text-transform: uppercase;
+    text-decoration: none;
+}
+
+.fans-counter .count-value {
+    font-size: 1.25em;
+    font-weight: bold;
+    padding: 0;
+    margin: 0;
+}
+
+.fans-counter .count-label {
+    font-size: 75%;
+}

@@ -34,7 +34,19 @@ const router = createBrowserRouter([
     element: <Game />,
   },
   {
+    path: '/characters/:characterId',
+    element: <Game />,
+  },
+  {
     path: '/maps',
+    element: <Game />,
+  },
+  {
+    path: '/profile/:userId',
+    element: <Game />,
+  },
+  {
+    path: '/campaigns',
     element: <Game />,
   },
 ]);
