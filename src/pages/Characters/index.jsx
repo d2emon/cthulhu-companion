@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { Button, Card, Col, Container, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import CharacterFilters from '../../components/CharacterFilters';
+import CharacterMaster from '../../components/CharacterMaster';
 
 const characterGroups = [
   {
@@ -28,6 +29,8 @@ const characterTags = [
 function Characters() {
   const [groups, setGroups] = useState(['pc', 'npc']);
   const [tags, setTags] = useState([]);
+
+  const [isCharacterMaster, setIsCharacterMaster] = useState(false);
 
   const [characters, setCharacters] = useState([
     {
@@ -87,13 +90,18 @@ function Characters() {
       url: `/characters/${characters.length + 1}`,
       tags: [],
     };
+    setIsCharacterMaster(true);
     setCharacters([
       ...characters,
       character,
-    ])
+    ]);
   }, [
     characters,
   ]);
+
+  if (isCharacterMaster) {
+    return <CharacterMaster />;
+  }
 
   return (
     <Container>
