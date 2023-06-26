@@ -3,6 +3,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import Campaign from '../pages/Campaign';
 import Characters from '../pages/Characters';
 import Game from '../pages/Game';
+import Bestiary from '../pages/Bestiary';
 
 const router = createBrowserRouter([
   {
@@ -32,6 +33,11 @@ const router = createBrowserRouter([
       {
         path: '/maps',
         element: <Game />,
+      },
+      // Apps
+      {
+        path: '/bestiary',
+        element: <Bestiary />,
       },
     ],
   },
