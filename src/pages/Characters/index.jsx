@@ -157,16 +157,16 @@ function Characters() {
                         <Card.Body>
                           <div>
                             { character.tags.map((tag, tagId) => (
-                              <>
+                              <span key={tagId}>
                                 <Button
-                                  key={tag}
+                                  key={tagId}
                                   variant="link"
                                   onClick={applyTag(tag)}
                                 >
                                   {tag}
                                 </Button>
                                 { (tagId < character.tags.length - 1) && ', ' }
-                              </>
+                              </span>
                             )) }
                           </div>
                           <div>{character.description}</div>
