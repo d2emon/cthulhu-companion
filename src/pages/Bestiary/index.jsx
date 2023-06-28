@@ -1,151 +1,45 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import { Button, Card, Col, Container, Form, InputGroup, ListGroup, Navbar, Offcanvas, Row } from 'react-bootstrap';
-import { BsArrowDown, BsArrowUp, BsSearch, BsStar, BsStarFill } from 'react-icons/bs';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Button, Card, Container, Form, InputGroup, ListGroup, Navbar } from 'react-bootstrap';
+import { BsArrowDown, BsArrowUp, BsSearch } from 'react-icons/bs';
 import { FaBars } from 'react-icons/fa';
-
-const orders = [
-  {
-    title: <>ABC<BsArrowDown /></>,
-    sortFunction: (a, b) => (a.title && b.title && a.title > b.title) ? 1 : -1,
-  },
-  {
-    title: <>ABC<BsArrowUp /></>,
-    sortFunction: (a, b) => (a.title && b.title && a.title < b.title) ? 1 : -1,
-  },
-  {
-    title: <>CR<BsArrowDown /></>,
-    sortFunction: (a, b) => (a.cr < b.cr) ? 1 : -1,
-  },
-  {
-    title: <>CR<BsArrowUp /></>,
-    sortFunction: (a, b) => (a.cr > b.cr) ? 1 : -1,
-  },
-];
-
-const data = [
-  {
-    id: '1',
-    title: 'Aboleth',
-    cr: 10,
-    type: 'Large abberation',
-    source: 'SRD',
-    favourite: false,
-  },
-  {
-    id: '2',
-    title: 'Acolyte',
-    cr: 0.25,
-    type: 'Medium humanoid (any race)',
-    source: 'SRD',
-    favourite: true,
-  },
-  {
-    id: '3',
-    title: 'Adult Black Dragon',
-    cr: 14,
-    type: 'Huge dragon',
-    source: 'SRD',
-    favourite: false,
-  },
-  {
-    id: '4',
-    title: 'Adult Blue Dracolich',
-    cr: 17,
-    type: 'Huge undead',
-    source: 'SRD',
-    favourite: true,
-  },
-  {
-    id: '5',
-    title: 'Adult Blue Dragon',
-    cr: 16,
-    type: 'Huge dragon',
-    source: 'SRD',
-    favourite: false,
-  },
-];
-
-function BestiaryItem({
-  id,
-  title,
-  favourite,
-  cr,
-  type,
-  source,
-  onChangeFavourite,
-}) {
-  const handleSetFavourite = useCallback(
-    () => {
-      if (onChangeFavourite) {
-        onChangeFavourite({
-          id,
-          favourite: !favourite,
-        });
-      }
-    },
-    [
-      id,
-      favourite,
-      onChangeFavourite,
-    ],
-  );
-    
-  return (
-    <ListGroup.Item>
-      <Row>
-        <Col>
-          <div className="fw-bold">{title}</div>
-          <span>CR: {cr}</span>
-          &nbsp;
-          <span>{type}</span>
-          &nbsp;
-          <span>{source}</span>
-        </Col>
-        <Col sm={2}>
-          { (
-            favourite
-              ? <BsStarFill onClick={handleSetFavourite} />
-              : <BsStar onClick={handleSetFavourite} />
-          ) }
-        </Col>
-      </Row>
-    </ListGroup.Item>
-  );
-}
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  getMonsters, searchTitle, selectDesc, selectFavourites, selectMonsters,
+  selectOrder, selectSearch, selectSelectedSources, setFavourites, setOrder, setSources, switchFavourite,
+} from '../../features/bestiarySlice';
+import BestiaryItem from './BestiaryItem';
+import orders, { orderTitles } from './orders';
+import { selectSources } from '../../features/sourcesSlice';
+import SourcesSelector from './SourcesSelector';
+import BestiaryMenu from './BestiaryMenu';
 
 function Bestiary() {
+  const dispatch = useDispatch();
+
+  const desc = useSelector(selectDesc);
+  const monsters = useSelector(selectMonsters);
+  const onlyFavourites = useSelector(selectFavourites);
+  const order = useSelector(selectOrder);
+  const search = useSelector(selectSearch);
+  const sources = useSelector(selectSources);
+  const selectedSources = useSelector(selectSelectedSources)
+
   const [showMenu, setShowMenu] = useState(false);
+  const [showSelectSources, setShowSelectSources] = useState(false);
 
-  const [onlyFavourites, setOnlyFavourites] = useState(false);
   const [orderId, setOrderId] = useState(0);
-  const [search, setSearch] = useState('');
 
-  const order = useMemo(
-    () => orders[orderId],
-    [orderId],
-  );
-
-  const [items, setItems] = useState(data);
-
-  const filtered = useMemo(
-    () => items
-      .filter((item) => {
-        if (onlyFavourites && !item.favourite) {
-          return false;
-        }
-
-        if (search && item.title.indexOf(search) < 0) {
-            return false;
-        }
-
-        return true;
-      })
-      .sort(order.sortFunction),
+  useEffect(
+    () => {
+      dispatch(getMonsters());
+    },
     [
-      items,
+      dispatch,
+      desc,
       onlyFavourites,
       order,
       search,
+      selectedSources,
     ],
   );
 
@@ -164,27 +58,35 @@ function Bestiary() {
   );
 
   const handleSwitchFavourites = useCallback(
-    (e) => {
-      setOnlyFavourites(e.target.checked);
+    (checked) => {
+      dispatch(setFavourites(checked));
     },
-    [],
+    [dispatch],
   );
 
   const handleSwitchOrder = useCallback(
     () => {
-      const value = (orderId < orders.length - 1)
+      const nextOrderId = (orderId < orders.length - 1)
         ? orderId + 1
         : 0;
-      setOrderId(value);
+      const nextOrder = orders[nextOrderId];
+      setOrderId(nextOrderId);
+      dispatch(setOrder({
+        order: nextOrder.order,
+        desc: nextOrder.desc,
+      }));
     },
-    [orderId],
+    [
+      dispatch,
+      orderId,
+    ],
   );
 
   const handleSearch = useCallback(
     (e) => {
-      setSearch(e.target.value);
+      dispatch(searchTitle(e.target.value));
     },
-    [],
+    [dispatch],
   );
 
   const handleChangeFavourite = useCallback(
@@ -192,40 +94,84 @@ function Bestiary() {
       id,
       favourite,
     }) => {
-      setItems(items.map((item) => {
-        if (item.id === id) {
-          return {
-            ...item,
-            favourite,
-          }
-        }
-        return item;
+      dispatch(switchFavourite({
+        id,
+        favourite,
       }));
     },
-    [items],
+    [dispatch],
   );
+
+  const handleShowSelectSources = useCallback(
+    () => {
+      setShowSelectSources(true);
+      setShowMenu(false);
+    },
+    [],
+  );
+
+  const handleHideSelectSources = useCallback(
+    () => {
+      setShowSelectSources(false);
+    },
+    [],
+  );
+
+  const handleSelectSources = useCallback(
+    (value) => {
+      dispatch(setSources(value));
+    },
+    [
+      dispatch,
+    ],
+  );
+
+  useEffect(
+    () => {
+      dispatch(setSources(sources.reduce(
+        (result, source) => ({
+          ...result,
+          [source.id]: true,
+        }),
+        {},
+      )));
+    },
+    [
+      dispatch,
+      sources,
+    ],
+  )
+
+  if (showSelectSources) {
+    return (
+      <Card>
+        <SourcesSelector
+          selected={selectedSources}
+          sources={sources}
+          onChange={handleSelectSources}
+        />
+        <Card.Footer>
+          <Button
+            variant="primary"
+            onClick={handleHideSelectSources}
+          >
+            Готово
+          </Button>
+        </Card.Footer>
+      </Card>
+    );
+  }
 
   return (
     <Card>
-      <Offcanvas
+      <BestiaryMenu
         show={showMenu}
+        favourites={onlyFavourites}
         onHide={handleMenuClose}
-      >
-        <Offcanvas.Header closeButton>
-          <Offcanvas.Title>Bestiary</Offcanvas.Title>
-        </Offcanvas.Header>
-        <Offcanvas.Body>
-          <Form>
-            <Form.Check
-              type="switch"
-              id="favouritesOnly"
-              label="Show Favourites Only"
-              checked={onlyFavourites}
-              onChange={handleSwitchFavourites}
-            />
-          </Form>
-        </Offcanvas.Body>
-      </Offcanvas>
+        onChange={handleSwitchFavourites}
+        onShowSelectSources={handleShowSelectSources}
+
+      />
 
       <Card.Header>
         <Navbar>
@@ -258,7 +204,8 @@ function Bestiary() {
                 variant="secondary"
                 onClick={handleSwitchOrder}
               >
-                { order && order.title }
+                { orderTitles[order] }
+                { desc ? <BsArrowUp /> : <BsArrowDown /> }
               </Button>
             </Navbar.Collapse>
           </Container>
@@ -266,7 +213,7 @@ function Bestiary() {
       </Card.Header>
 
       <ListGroup variant="flush">
-        { filtered.map((item) => (
+        { monsters.map((item) => (
           <BestiaryItem
             key={item.id}
             id={item.id}
