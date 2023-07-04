@@ -5,13 +5,13 @@ import { FaBars } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   getMonsters, searchTitle, selectDesc, selectFavourites, selectMonsters,
-  selectOrder, selectSearch, selectSelectedSources, setFavourites, setOrder, setSources, switchFavourite,
-} from '../../features/bestiarySlice';
-import BestiaryItem from './BestiaryItem';
+  selectOrder, selectSearch, selectSelectedSources, setFavourites, setOrder,
+  switchFavourite,
+} from '../../features/bestiary/bestiarySlice';
+import BestiaryItem from '../../features/bestiary/components/BestiaryItem';
 import orders, { orderTitles } from './orders';
-import { selectSources } from '../../features/sourcesSlice';
-import SourcesSelector from './SourcesSelector';
-import BestiaryMenu from './BestiaryMenu';
+import BestiaryMenu from '../../features/bestiary/components/BestiaryMenu';
+import SourcesContainer from '../../features/bestiary/containers/SourcesContainer';
 
 function Bestiary() {
   const dispatch = useDispatch();
@@ -21,7 +21,6 @@ function Bestiary() {
   const onlyFavourites = useSelector(selectFavourites);
   const order = useSelector(selectOrder);
   const search = useSelector(selectSearch);
-  const sources = useSelector(selectSources);
   const selectedSources = useSelector(selectSelectedSources)
 
   const [showMenu, setShowMenu] = useState(false);
@@ -117,49 +116,10 @@ function Bestiary() {
     [],
   );
 
-  const handleSelectSources = useCallback(
-    (value) => {
-      dispatch(setSources(value));
-    },
-    [
-      dispatch,
-    ],
-  );
-
-  useEffect(
-    () => {
-      dispatch(setSources(sources.reduce(
-        (result, source) => ({
-          ...result,
-          [source.id]: true,
-        }),
-        {},
-      )));
-    },
-    [
-      dispatch,
-      sources,
-    ],
-  )
-
   if (showSelectSources) {
-    return (
-      <Card>
-        <SourcesSelector
-          selected={selectedSources}
-          sources={sources}
-          onChange={handleSelectSources}
-        />
-        <Card.Footer>
-          <Button
-            variant="primary"
-            onClick={handleHideSelectSources}
-          >
-            Готово
-          </Button>
-        </Card.Footer>
-      </Card>
-    );
+    return <SourcesContainer
+      onHide={handleHideSelectSources}
+    />;
   }
 
   return (

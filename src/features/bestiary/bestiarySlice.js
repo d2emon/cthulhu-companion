@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { fetchBestiary, setFavourite } from '../api/bestiary';
+import { fetchBestiary, setFavourite } from '../../api/bestiary';
 
 export const STATUS_IDLE = 'STATUS_IDLE';
 export const STATUS_LOADING = 'STATUS_LOADING';
@@ -46,14 +46,6 @@ const buildQuery = ({
 export const getMonsters = createAsyncThunk(
   'bestiary/getMonsters',
   async (payload, thunkAPI) => {
-    /*
-    const query = buildQuery({
-      desc,
-      favourite: onlyFavourites,
-      order,
-      title: search,    
-    });
-    */
     const { bestiary } = thunkAPI.getState();
     const query = buildQuery(bestiary);
     const response = await fetchBestiary({ query });
