@@ -38,6 +38,16 @@ const router = createBrowserRouter([
       {
         path: '/bestiary',
         element: <Bestiary />,
+        children: [
+          {
+            path: '',
+            element: <Bestiary />,    
+          },
+          {
+            path: '/bestiary/:id',
+            element: <Bestiary />,    
+          },
+        ],
       },
     ],
   },

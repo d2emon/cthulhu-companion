@@ -15,6 +15,7 @@ function BestiaryItem({
   const handleSetFavourite = useCallback(
     (e) => {
       console.log(e);
+      e.preventDefault(e);
       e.stopPropagation();
       if (onChangeFavourite) {
         onChangeFavourite({
@@ -33,7 +34,7 @@ function BestiaryItem({
   return (
     <ListGroup.Item
       as={Link}
-      to={`/bestiary/id`}
+      to={`/bestiary/${id}`}
     >
       <Row>
         <Col>
