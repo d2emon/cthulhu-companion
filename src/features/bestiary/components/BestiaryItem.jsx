@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { Col, ListGroup, Row } from 'react-bootstrap';
 import { BsStar, BsStarFill } from 'react-icons/bs';
+import { Link } from 'react-router-dom';
 
 function BestiaryItem({
   id,
@@ -12,7 +13,9 @@ function BestiaryItem({
   onChangeFavourite,
 }) {
   const handleSetFavourite = useCallback(
-    () => {
+    (e) => {
+      console.log(e);
+      e.stopPropagation();
       if (onChangeFavourite) {
         onChangeFavourite({
           id,
@@ -28,7 +31,10 @@ function BestiaryItem({
   );
       
   return (
-    <ListGroup.Item>
+    <ListGroup.Item
+      as={Link}
+      to={`/bestiary/id`}
+    >
       <Row>
         <Col>
           <div className="fw-bold">{title}</div>

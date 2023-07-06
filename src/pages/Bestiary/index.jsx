@@ -1,17 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Button, Card, Container, Form, InputGroup, ListGroup, Navbar } from 'react-bootstrap';
-import { BsArrowDown, BsArrowUp, BsSearch } from 'react-icons/bs';
-import { FaBars } from 'react-icons/fa';
+import { Card, ListGroup } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  getMonsters, searchTitle, selectDesc, selectFavourites, selectMonsters,
-  selectOrder, selectSearch, selectSelectedSources, setFavourites, setOrder,
-  switchFavourite,
+  getMonsters, selectDesc, selectFavourites, selectMonsters,
+  selectOrder, selectSearch, selectSelectedSources, switchFavourite,
 } from '../../features/bestiary/bestiarySlice';
 import BestiaryItem from '../../features/bestiary/components/BestiaryItem';
-import orders, { orderTitles } from './orders';
-import BestiaryMenu from '../../features/bestiary/components/BestiaryMenu';
 import SourcesContainer from '../../features/bestiary/containers/SourcesContainer';
+import BestiaryFilters from '../../features/bestiary/containers/BestiaryFilters';
+import MenuContainer from '../../features/bestiary/containers/MenuContainer';
 
 function Bestiary() {
   const dispatch = useDispatch();
@@ -25,8 +22,6 @@ function Bestiary() {
 
   const [showMenu, setShowMenu] = useState(false);
   const [showSelectSources, setShowSelectSources] = useState(false);
-
-  const [orderId, setOrderId] = useState(0);
 
   useEffect(
     () => {
@@ -54,38 +49,6 @@ function Bestiary() {
       setShowMenu(false);
     },
     [],
-  );
-
-  const handleSwitchFavourites = useCallback(
-    (checked) => {
-      dispatch(setFavourites(checked));
-    },
-    [dispatch],
-  );
-
-  const handleSwitchOrder = useCallback(
-    () => {
-      const nextOrderId = (orderId < orders.length - 1)
-        ? orderId + 1
-        : 0;
-      const nextOrder = orders[nextOrderId];
-      setOrderId(nextOrderId);
-      dispatch(setOrder({
-        order: nextOrder.order,
-        desc: nextOrder.desc,
-      }));
-    },
-    [
-      dispatch,
-      orderId,
-    ],
-  );
-
-  const handleSearch = useCallback(
-    (e) => {
-      dispatch(searchTitle(e.target.value));
-    },
-    [dispatch],
   );
 
   const handleChangeFavourite = useCallback(
@@ -124,52 +87,16 @@ function Bestiary() {
 
   return (
     <Card>
-      <BestiaryMenu
+      <MenuContainer
         show={showMenu}
-        favourites={onlyFavourites}
         onHide={handleMenuClose}
-        onChange={handleSwitchFavourites}
         onShowSelectSources={handleShowSelectSources}
-
       />
 
       <Card.Header>
-        <Navbar>
-          <Container>
-            <Navbar.Brand>
-              <Button
-                variant="secondary"
-                onClick={handleMenuShow}
-              >
-                <FaBars />
-              </Button>
-            </Navbar.Brand>
-            <Navbar.Toggle aria-controls="main-navbar-nav" />
-            <Navbar.Collapse id="main-navbar-nav">
-              <Form className="d-flex">
-                <InputGroup>
-                  <InputGroup.Text>
-                    <BsSearch />
-                  </InputGroup.Text>
-                  <Form.Control
-                    type="search"
-                    className="me-2"
-                    aria-label="Search"
-                    value={search}
-                    onChange={handleSearch}
-                  />
-                </InputGroup>
-              </Form>
-              <Button
-                variant="secondary"
-                onClick={handleSwitchOrder}
-              >
-                { orderTitles[order] }
-                { desc ? <BsArrowUp /> : <BsArrowDown /> }
-              </Button>
-            </Navbar.Collapse>
-          </Container>
-        </Navbar>
+        <BestiaryFilters
+          onShowMenu={handleMenuShow}
+        />
       </Card.Header>
 
       <ListGroup variant="flush">
