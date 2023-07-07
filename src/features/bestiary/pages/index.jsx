@@ -8,6 +8,7 @@ import {
 import { selectSources } from '../sourcesSlice';
 import BestiaryList from './BestiaryList';
 import Sources from './Sources';
+import Details from './Details';
 
 function Bestiary() {
   const dispatch = useDispatch();
@@ -48,6 +49,7 @@ function Bestiary() {
   );
 }
 
+Bestiary.Details = Details;
 Bestiary.List = BestiaryList;
 Bestiary.Sources = Sources;
 

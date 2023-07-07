@@ -9,7 +9,6 @@ function BestiaryMenu ({
   favourites,
   onHide,
   onChange,
-  onShowSelectSources,
 }) {
   const handleSwitchFavourites = useCallback(
     e => {

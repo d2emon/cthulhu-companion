@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { fetchBestiary, setFavourite } from '../../api/bestiary';
+import { fetchBestiary, fetchBestiaryItem, setFavourite } from '../../api/bestiary';
 
 export const STATUS_IDLE = 'STATUS_IDLE';
 export const STATUS_LOADING = 'STATUS_LOADING';
@@ -8,6 +8,7 @@ const initialState = {
   desc: false,
   favourite: false,
   order: 'title',
+  monster: null,
   monsters: [],
   sources: {},
   sourcesLoaded: false,
@@ -50,6 +51,18 @@ export const getMonsters = createAsyncThunk(
     const { bestiary } = thunkAPI.getState();
     const query = buildQuery(bestiary);
     const response = await fetchBestiary({ query });
+
+    return response.data;
+  }
+);
+
+export const getMonster = createAsyncThunk(
+  'bestiary/getMonster',
+  async ({
+    id,
+  }, thunkAPI) => {
+    const query = { id };
+    const response = await fetchBestiaryItem({ query });
 
     return response.data;
   }
@@ -135,6 +148,16 @@ export const bestiarySlice = createSlice({
         status: STATUS_IDLE,
         monsters: action.payload,
       }))
+      .addCase(getMonster.pending, (state) => ({
+        ...state,
+        status: STATUS_LOADING,
+        monster: null,
+      }))
+      .addCase(getMonster.fulfilled, (state, action) => ({
+        ...state,
+        status: STATUS_IDLE,
+        monster: action.payload,
+      }))
       .addCase(switchFavourite.pending, (state) => ({
         ...state,
         status: STATUS_LOADING,
@@ -160,6 +183,7 @@ export const {
 export const selectDesc = (state) => state.bestiary.desc;
 export const selectFavourites = (state) => state.bestiary.favourite;
 export const selectMonsters = (state) => state.bestiary.monsters;
+export const selectMonster = (state) => state.bestiary.monster;
 export const selectOrder = (state) => state.bestiary.order;
 export const selectSelectedSources = (state) => state.bestiary.sources;
 export const selectSearch = (state) => state.bestiary.title;

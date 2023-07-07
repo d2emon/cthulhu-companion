@@ -50,6 +50,8 @@ const getItems = ({
     .sort(sortFunction);  
 };
 
+const getItem = ({ id }) => items.find(item => item.id === id);
+
 const updateItem = (id, values) => {
   items = items.map((item) => {
     if (item.id === id) {
@@ -63,6 +65,8 @@ const updateItem = (id, values) => {
 };
 
 export const fetchBestiary = mockAPI(({ query }) => getItems(query));
+
+export const fetchBestiaryItem = mockAPI(({ query }) => getItem(query));
 
 export const setFavourite = mockAPI(({ query, data }) => {
   const {

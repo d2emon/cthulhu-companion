@@ -6,7 +6,6 @@ import BestiaryMenu from '../components/BestiaryMenu';
 function MenuContainer({
   show,
   onHide,
-  onShowSelectSources,
 }) {
   const dispatch = useDispatch();
 
@@ -25,7 +24,6 @@ function MenuContainer({
       favourites={onlyFavourites}
       onHide={onHide}
       onChange={handleSwitchFavourites}
-      onShowSelectSources={onShowSelectSources}
     />
   );
 }

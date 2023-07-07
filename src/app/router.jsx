@@ -48,8 +48,8 @@ const router = createBrowserRouter([
             element: <Bestiary.Sources />,
           },
           {
-            path: ':id',
-            element: <Bestiary.List />,    
+            path: ':monsterId',
+            element: <Bestiary.Details />,    
           },
         ],
       },
