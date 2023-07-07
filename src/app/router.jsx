@@ -3,7 +3,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import Campaign from '../pages/Campaign';
 import Characters from '../pages/Characters';
 import Game from '../pages/Game';
-import Bestiary from '../pages/Bestiary';
+import Bestiary from '../features/bestiary/pages';
 
 const router = createBrowserRouter([
   {
@@ -41,11 +41,15 @@ const router = createBrowserRouter([
         children: [
           {
             path: '',
-            element: <Bestiary />,    
+            element: <Bestiary.List />,    
           },
           {
-            path: '/bestiary/:id',
-            element: <Bestiary />,    
+            path: 'sources',
+            element: <Bestiary.Sources />,
+          },
+          {
+            path: ':id',
+            element: <Bestiary.List />,    
           },
         ],
       },

@@ -36,7 +36,7 @@ const getItems = ({
       }
   
       if (sources) {
-        if (sources.indexOf(item.source) < 0) {
+        if (item.source && sources.indexOf(item.source.id) < 0) {
           return false;
         }
       }

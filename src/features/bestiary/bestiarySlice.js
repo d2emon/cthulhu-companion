@@ -10,6 +10,7 @@ const initialState = {
   order: 'title',
   monsters: [],
   sources: {},
+  sourcesLoaded: false,
   status: STATUS_IDLE,
   title: '',
 };
@@ -74,6 +75,29 @@ export const switchFavourite = createAsyncThunk(
   }
 );
 
+export const resetSources = (dispatch, getState) => {
+  const { sourcesLoaded } = getState().bestiary;
+
+  if (sourcesLoaded) {
+    return;
+  }
+
+  const { sources } = getState().sources;
+
+  dispatch(setSources(
+    sources
+      ? sources.reduce(
+        (selected, source) => ({
+          ...selected,
+          [source.id]: true,
+        }),
+        {},
+      )
+      : {}
+  ));
+  dispatch(setSourcesLoaded(true));
+};
+
 export const bestiarySlice = createSlice({
   name: 'bestiary',
   initialState,
@@ -94,6 +118,10 @@ export const bestiarySlice = createSlice({
     setSources: (state, action) => ({
       ...state,
       sources: action.payload,
+    }),
+    setSourcesLoaded: (state, action) => ({
+      ...state,
+      sourcesLoaded: action.payload,
     }),
   },
   extraReducers: (builder) => {
@@ -125,6 +153,7 @@ export const {
   setFavourites,
   setOrder,
   setSources,
+  setSourcesLoaded,
 } = bestiarySlice.actions;
 
 

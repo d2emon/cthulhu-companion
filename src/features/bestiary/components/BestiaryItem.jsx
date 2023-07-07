@@ -43,7 +43,7 @@ function BestiaryItem({
           &nbsp;
           <span>{type}</span>
           &nbsp;
-          <span>{source}</span>
+          { source && <span>{source.title}</span> }
         </Col>
         <Col sm={2}>
           { (

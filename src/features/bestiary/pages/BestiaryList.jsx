@@ -4,13 +4,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   getMonsters, selectDesc, selectFavourites, selectMonsters,
   selectOrder, selectSearch, selectSelectedSources, switchFavourite,
-} from '../../features/bestiary/bestiarySlice';
-import BestiaryItem from '../../features/bestiary/components/BestiaryItem';
-import SourcesContainer from '../../features/bestiary/containers/SourcesContainer';
-import BestiaryFilters from '../../features/bestiary/containers/BestiaryFilters';
-import MenuContainer from '../../features/bestiary/containers/MenuContainer';
+} from '../bestiarySlice';
+import BestiaryItem from '../components/BestiaryItem';
+import SourcesContainer from './Sources';
+import BestiaryFilters from '../containers/BestiaryFilters';
+import MenuContainer from '../containers/MenuContainer';
 
-function Bestiary() {
+function BestiaryList() {
   const dispatch = useDispatch();
 
   const desc = useSelector(selectDesc);
@@ -117,4 +117,4 @@ function Bestiary() {
   );
 }
 
-export default Bestiary;
+export default BestiaryList;
