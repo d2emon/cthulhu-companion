@@ -8,7 +8,6 @@ import './Header.css';
 
 function Header({
     banner,
-    logo,
     title,
 }) {
     return (
@@ -18,7 +17,7 @@ function Header({
                     lg={2}
                     sm={5}
                 >
-                    <Logo src={logo} />
+                    <Logo />
                 </Col>
 
                 <Col

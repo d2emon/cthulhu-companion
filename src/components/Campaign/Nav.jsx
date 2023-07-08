@@ -1,19 +1,19 @@
 import { Container, ListGroup } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { MdEditCalendar } from 'react-icons/md';
+import { MdBackpack, MdEditCalendar } from 'react-icons/md';
 import { BsHouseDoor, BsMap, BsPeople, BsWikipedia } from 'react-icons/bs';
 
 const items = [
     {
         id: 'main',
         link: '/',
-        title: 'Home Page',
+        title: 'Главная',
         icon: <BsHouseDoor />,
     },
     {
         id: 'adventure-log',
         link: '/adventure-log',
-        title: 'Adventure Log',
+        title: 'Журнал',
         icon: <MdEditCalendar />,
     },
     {
@@ -25,13 +25,19 @@ const items = [
     {
         id: 'characters',
         link: '/characters',
-        title: 'Characters',
+        title: 'Персонажи',
         icon: <BsPeople />,
+    },
+    {
+        id: 'items',
+        link: '/items',
+        title: 'Предметы',
+        icon: <MdBackpack />,
     },
     {
         id: 'maps',
         link: '/maps',
-        title: 'Maps',
+        title: 'Карты',
         icon: <BsMap />,
     },
 

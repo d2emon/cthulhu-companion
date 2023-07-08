@@ -1,16 +1,11 @@
 import React from 'react';
 
-function Logo({
-    src,
-}) {
+function Logo() {
     return (
         <div
             style={{
                 height: 130,
                 width: 130,
-                backgroundImage: `url("${src}")`,
-                backgroundPosition: 'center bottom',
-                backgroundRepeat: 'no-repeat',
             }}
         >
             &nbsp;
