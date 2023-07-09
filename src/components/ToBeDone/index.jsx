@@ -1,13 +1,18 @@
 import React from 'react';
-import { Counter } from '../../features/counter/Counter';
-import logo from './logo.svg';
-import './ToBeDone.css';
 import { Col, Container, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { Counter } from '../../features/counter/Counter';
+import Roll from '../../features/savageWorlds/Roll';
+import logo from './logo.svg';
+import './ToBeDone.css';
 
 function ToBeDone() {
     return (
         <Container>
+          <Roll />
+
+          <hr />
+
           <Row>
             <Col md={3}>
                 <Link to="/bestiary">5e Bestiary</Link>
