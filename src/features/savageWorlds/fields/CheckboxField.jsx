@@ -1,14 +1,14 @@
 import { useCallback } from 'react';
 import { Form } from 'react-bootstrap';
 
-function CommonField ({
+function CheckboxField ({
   type,
   value,
   onChange,
 }) {
   const handleChange = useCallback(
     (e) => {
-      const newValue = e.target.value;
+      const newValue = e.target.checked;
       if (onChange) {
         onChange(newValue);
       }
@@ -17,12 +17,12 @@ function CommonField ({
   );
     
   return (
-    <Form.Control
+    <Form.Check
       type={type}
-      value={value}
+      checked={value}
       onChange={handleChange}
     />
   );
 }
 
-export default CommonField;
+export default CheckboxField;

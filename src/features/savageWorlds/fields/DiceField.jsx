@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { Form } from 'react-bootstrap';
-import dices from './dices';
+import dices from '../dice/dices';
 
 function DiceField ({
   value,

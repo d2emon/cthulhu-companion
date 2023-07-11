@@ -179,7 +179,6 @@ export const {
   setSourcesLoaded,
 } = bestiarySlice.actions;
 
-
 export const selectDesc = (state) => state.bestiary.desc;
 export const selectFavourites = (state) => state.bestiary.favourite;
 export const selectMonsters = (state) => state.bestiary.monsters;

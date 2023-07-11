@@ -1,8 +1,9 @@
 import { useCallback, useMemo } from 'react';
-import { Badge, Button, ButtonGroup, Card, Container, Form, InputGroup } from 'react-bootstrap';
-import CommonField from './CommonField';
+import { Badge, Button, ButtonGroup, Card, Container, Form } from 'react-bootstrap';
+import ModifierField from './fields/ModifierField';
 
 function AddModifierButton ({
+  label,
   title,
   value,
   onClick,
@@ -11,12 +12,13 @@ function AddModifierButton ({
     () => {
       if (onClick) {
         onClick({
-          title: '',
+          title,
           value,
         });
       }
     },
     [
+      title,
       value,
       onClick,
     ],
@@ -26,7 +28,7 @@ function AddModifierButton ({
     <Button
       onClick={handleClick}
     >
-      {title}
+      {label}
     </Button>
   );
 }
@@ -42,84 +44,6 @@ function ModifierBadge ({ value }) {
     return <Badge bg="warning">Трудно</Badge>
   }
   return null;
-}
-
-function  ModifierValueField ({
-  id,
-  value,
-  title,
-  onChange,
-  onRemove,
-}) {
-  const handleChangeTitle = useCallback(
-    (newValue) => {
-      if (onChange) {
-        onChange({
-          id,
-          title: newValue,
-          value,
-        });
-      }
-    },
-    [
-      id,
-      value,
-      onChange,
-    ],
-  );
-
-  const handleChange = useCallback(
-    (newValue) => {
-      if (onChange) {
-        onChange({
-          id,
-          title,
-          value: parseInt(newValue, 10),
-        });
-      }
-    },
-    [
-      id,
-      title,
-      onChange,
-    ],
-  );
-
-  const handleRemove = useCallback(
-    (Remove) => {
-      if (onRemove) {
-        onRemove(id);
-      }
-    },
-    [
-      id,
-      onRemove,
-    ],
-  );
-
-  return (
-    <Form.Group>
-      <Form.Label>Модификатор</Form.Label>
-      <CommonField
-        value={title}
-        onChange={handleChangeTitle}
-      />
-      <InputGroup>
-        <ModifierBadge value={value} />
-        <CommonField
-          type="number"
-          value={value}
-          onChange={handleChange}
-        />
-        <Button
-          variant="danger"
-          onClick={handleRemove}
-        >
-          Удалить
-        </Button>
-      </InputGroup>
-    </Form.Group>
-  );    
 }
 
 function ModifiersField ({
@@ -199,24 +123,27 @@ function ModifiersField ({
         <Container>
           <ButtonGroup>
             <AddModifierButton
-              title="Добавить"
+              label="Добавить"
               value={0}
               onClick={handleAddValue}
             />
 
             <AddModifierButton
+              label="Простое действие"
               title="Простое действие"
               value={2}
               onClick={handleAddValue}
             />
 
             <AddModifierButton
+              label="Сложное действие"
               title="Сложное действие"
               value={-2}
               onClick={handleAddValue}
             />
 
             <AddModifierButton
+              label="Очень сложное действие"
               title="Очень сложное действие"
               value={-4}
               onClick={handleAddValue}
@@ -229,14 +156,16 @@ function ModifiersField ({
         <Card.Body>
           <Form>
             { values.map((value) => (
-              <ModifierValueField
-                key={value.id}
-                id={value.id}
-                title={value.title}
-                value={value.value}
-                onChange={handleChangeValue}
-                onRemove={handleRemoveValue}
-              />
+              <Form.Group key={value.id}>
+                <Form.Label>Модификатор <ModifierBadge value={value.value} /></Form.Label>
+                <ModifierField
+                  id={value.id}
+                  title={value.title}
+                  value={value.value}
+                  onChange={handleChangeValue}
+                  onRemove={handleRemoveValue}
+                />
+              </Form.Group>
             ))}
           </Form>  
         </Card.Body>
@@ -244,15 +173,12 @@ function ModifiersField ({
 
       <Card.Footer>
         <Form.Group>
-          <Form.Label>Сумма</Form.Label>
-          <InputGroup>
-            <ModifierBadge value={total} />
-            <Form.Control
-              disabled
-              readOnly
-              value={total}
-            />
-          </InputGroup>
+          <Form.Label>Сумма <ModifierBadge value={total} /></Form.Label>
+          <Form.Control
+            disabled
+            readOnly
+            value={total}
+          />
         </Form.Group>
       </Card.Footer>
     </Card>
