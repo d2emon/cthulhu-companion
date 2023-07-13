@@ -94,15 +94,18 @@ const setRollData = (
     ? modifiers.reduce((total, modifier) => (total + modifier.value), 0)
     : 0;
   const total = result.reduce((total, roll) => (total + roll.value), modifier);
+  const success = total >= difficulty;
+  const raises = success ? Math.floor((total - difficulty) / 4) : 0;
   
   return {
     id,
     dice: dice.data,
     difficulty,
     modifiers,
+    raises,
     result,
     total,
-    success: (total > difficulty),
+    success,
     withAces,
   };
 };

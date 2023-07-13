@@ -1,14 +1,45 @@
-import React from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
+import React, { useCallback, useState } from 'react';
+import { Button, Col, Container, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { Counter } from '../../features/counter/Counter';
+import RollModal from '../../features/savageWorlds/modals/RollModal';
 import Roll from '../../features/savageWorlds/Roll';
 import logo from './logo.svg';
 import './ToBeDone.css';
 
 function ToBeDone() {
+  const [showRoll, setShowRoll] = useState(false);
+
+  const handleShowRoll = useCallback(
+    () => {
+      setShowRoll(true);
+    },
+    [],
+  );
+
+  const handleHideRoll = useCallback(
+    () => {
+      setShowRoll(false);
+    },
+    [],
+  );
+
     return (
         <Container>
+          <RollModal
+            show={showRoll}
+            onHide={handleHideRoll}
+          />
+
+          <Button
+            variant="primary"
+            onClick={handleShowRoll}
+          >
+            Roll
+          </Button>
+
+          <hr />
+
           <Roll />
 
           <hr />

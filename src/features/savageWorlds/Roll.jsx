@@ -1,5 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Card, Col, Container, Form, Row } from 'react-bootstrap';
+import { Button, Col, Container, Form, Row } from 'react-bootstrap';
+import {
+  GiD4, GiDiceSixFacesSix, GiDiceEightFacesEight,
+  GiD10, GiD12, GiDiceTarget
+} from 'react-icons/gi';
 import CheckboxField from './fields/CheckboxField';
 import CommonField from './fields/CommonField';
 import DiceField from './fields/DiceField';
@@ -7,6 +11,14 @@ import ModifiersField from './ModifiersField';
 import RollResult from './RollResult';
 import { useDispatch, useSelector } from 'react-redux';
 import { addRollResult, deleteRollResult, doRoll, selectRolls, setDice, updateRollResult } from './rollSlice';
+
+const diceIcons = {
+  d4: <GiD4 />,
+  d6: <GiDiceSixFacesSix />,
+  d8: <GiDiceEightFacesEight />,
+  d10: <GiD10 />,
+  d12: <GiD12 />,
+};
 
 function Roll () {
   const dispatch = useDispatch();
@@ -17,6 +29,11 @@ function Roll () {
   const [withAces, setWithAces] = useState(true);
 
   const rollsData = useSelector(selectRolls);
+
+  const diceIcon = useMemo(
+    () => (diceIcons[diceId] || <GiDiceTarget />),
+    [diceId],
+  );
 
   const handleAddRoll = useCallback(
     (id) => {
@@ -78,6 +95,7 @@ function Roll () {
         <RollResult
           id={data.id}
           dice={data.dice.title}
+          raises={data.raises}
           rolls={data.result}
           max={data.dice.value}
           modifiers={data.modifiers}
@@ -125,11 +143,10 @@ function Roll () {
   );
 
   return (
-    <Card>
-      <Card.Body>
-        <Form>
+    <Container>
+      <Form>
             <Form.Group>
-              <Form.Label>Кость</Form.Label>
+              <Form.Label>Кость {diceIcon}</Form.Label>
               <DiceField
                 value={diceId}
                 onChange={setDiceId}
@@ -159,22 +176,23 @@ function Roll () {
               />
             </Form.Group>
 
-        </Form>
-        <Container>
+      </Form>
+
+      <Container>
           <div>DiceId: {diceId}</div>
           <div>Difficulty: {difficulty}</div>
           <div>Modifier: {totalModifier}</div>
-        </Container>
-        <Container>
+      </Container>
+
+      <Container>
           <Button onClick={addRoll}>
             Бросить
           </Button>
           <Row>
             { rolls }
           </Row>
-        </Container>
-      </Card.Body>
-    </Card>
+      </Container>
+    </Container>
   );
 }
 

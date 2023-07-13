@@ -22,11 +22,13 @@ const updateRollBlock = (rolls, id, updater) => {
       : 0;
     const total = result.reduce((total, roll) => (total + roll.value), modifier);
     const success = total >= difficulty;
-  
+    const raises = success ? Math.floor((total - difficulty) / 4) : 0;
+
     return {
       ...roll,
-      total,
+      raises,
       success,
+      total,
     };
   };
   
