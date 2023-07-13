@@ -3,6 +3,7 @@ import { Form } from 'react-bootstrap';
 
 function CommonField ({
   placeholder,
+  readOnly,
   type,
   value,
   onChange,
@@ -20,6 +21,7 @@ function CommonField ({
   return (
     <Form.Control
       placeholder={placeholder}
+      readOnly={readOnly}
       type={type}
       value={value}
       onChange={handleChange}

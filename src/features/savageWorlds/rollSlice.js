@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import dices from './dice/dices';
+import { fetchDice, fetchRollData, fetchRolls } from './api/diceAPI';
 
 const initialState = {
   diceId: 'd4',
@@ -9,64 +9,148 @@ const initialState = {
   withAces: true,
 };
 
-export const getDice = (diceId) => dices.find(({ id }) => (id === diceId));
-export const getRoller = (dice) => (id) => {
-  if (!dice) {
-    return null;
-  }
-
-  const value = Math.floor(Math.random() * dice.value) + 1;
-  return {
-    id,
-    value,
-    isAce: (value === dice.value),
+const updateRollBlock = (rolls, id, updater) => {
+  const recalculate = (roll) => {
+    const {
+      difficulty,
+      modifiers,
+      result,
+    } = roll;
+  
+    const modifier = modifiers
+      ? modifiers.reduce((total, modifier) => (total + modifier.value), 0)
+      : 0;
+    const total = result.reduce((total, roll) => (total + roll.value), modifier);
+    const success = total >= difficulty;
+  
+    return {
+      ...roll,
+      total,
+      success,
+    };
   };
+  
+  return rolls.map((roll) => (
+    (roll.id === id)
+      ? recalculate({
+          ...roll,
+          result: updater(roll),
+        })
+      : roll
+  ));
 };
+
+export const setDice = createAsyncThunk(
+  'roll/setDice',
+  async (diceId) => {
+    const result = await fetchDice({
+      query: {
+        diceId,
+      },
+    });
+    return {
+      diceId,
+      dice: result.data,
+    };    
+  },
+);
+
 
 export const doRoll = createAsyncThunk(
   'roll/doRoll',
-  (options, thunkAPI) => {
+  async (options, thunkAPI) => {
     const {
-      diceId,
       difficulty,
       modifiers,
       withAces,
     } = options;
     
     const {
-      dice,
+      diceId,
       rolls,
     } = thunkAPI.getState().roll;
-    const roller = getRoller(dice);
-    const modifier = modifiers
-      ? modifiers.reduce(
-        (total, modifier) => (total + modifier.value),
-        0,
-      )
-      : 0;
-        
-    const result = [];
-    let reroll = true;
-    while (reroll) {
-      const roll = roller(rolls.length);
-      result.push(roll);
-    
-      reroll = withAces && roll && roll.isAce;
-   
-      if (reroll) {
-        console.log('ACE!', diceId, roll, difficulty, modifiers);
+
+    const result = await fetchRollData({
+      query: {
+        diceId,
+      },
+      data: {
+        difficulty,
+        modifiers,
+        withAces,
       }
-    }
-    
+    });
     return [
       ...rolls,
-      {
-        id: rolls.length,
-        dice,
-        modifier,
-        result,
-      },
+      result.data,
     ];    
+  },
+);
+
+export const addRollResult = createAsyncThunk(
+  'roll/addRollResult',
+  async (payload, thunkAPI) => {
+    const {
+      id,
+      options,
+    } = payload;
+    
+    const result = await fetchRolls({
+      query: options,
+    });
+
+    const {
+      rolls,
+    } = thunkAPI.getState().roll;
+
+    return updateRollBlock(
+      rolls,
+      id,
+      (roll) => ([
+        ...roll.result,
+        ...result.data,
+      ]),
+    );
+  },
+);
+
+export const deleteRollResult = createAsyncThunk(
+  'roll/deleteRollResult',
+  (payload, thunkAPI) => {
+    const {
+      id,
+      value,
+    } = payload;
+    
+    const {
+      rolls,
+    } = thunkAPI.getState().roll;
+
+    return updateRollBlock(
+      rolls,
+      id,
+      roll => roll.result.filter((item) => (item.id !== value)),
+    );
+  },
+);
+
+export const updateRollResult = createAsyncThunk(
+  'roll/updateRollResult',
+  (payload, thunkAPI) => {
+    const {
+      id,
+      value,
+    } = payload;
+    
+    const {
+      rolls,
+    } = thunkAPI.getState().roll;
+
+    return updateRollBlock(
+      rolls,
+      id,
+      roll => roll.result.map((result) => ((result.id === value.id) ? value : result)),
+    );
   },
 );
   
@@ -78,14 +162,26 @@ export const rollSlice = createSlice({
       ...state,
       rolls: action.payload,
     }),
-    setDice: (state, action) => ({
-      ...state,
-      diceId: action.payload,
-      dice: getDice(action.payload),
-    }),
   },
   extraReducers: (builder) => {
     builder
+      .addCase(setDice.fulfilled, (state, action) => ({
+        ...state,
+        diceId: action.payload.diceId,
+        dice: action.payload.dice,
+      }))
+      .addCase(addRollResult.fulfilled, (state, action) => ({
+        ...state,
+        rolls: action.payload,
+      }))
+      .addCase(deleteRollResult.fulfilled, (state, action) => ({
+        ...state,
+        rolls: action.payload,
+      }))
+      .addCase(updateRollResult.fulfilled, (state, action) => ({
+        ...state,
+        rolls: action.payload,
+      }))      
       .addCase(doRoll.fulfilled, (state, action) => ({
         ...state,
         rolls: action.payload,
@@ -94,7 +190,6 @@ export const rollSlice = createSlice({
 });
 
 export const {
-  setDice,
   setRolls,
 } = rollSlice.actions;
   

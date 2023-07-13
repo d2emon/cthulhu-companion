@@ -6,7 +6,7 @@ import DiceField from './fields/DiceField';
 import ModifiersField from './ModifiersField';
 import RollResult from './RollResult';
 import { useDispatch, useSelector } from 'react-redux';
-import { doRoll, selectRolls, setDice } from './rollSlice';
+import { addRollResult, deleteRollResult, doRoll, selectRolls, setDice, updateRollResult } from './rollSlice';
 
 function Roll () {
   const dispatch = useDispatch();
@@ -17,6 +17,43 @@ function Roll () {
   const [withAces, setWithAces] = useState(true);
 
   const rollsData = useSelector(selectRolls);
+
+  const handleAddRoll = useCallback(
+    (id) => {
+      dispatch(addRollResult({
+        id,
+        options: {
+          diceId,
+          withAces,
+        },
+      }));
+    },
+    [
+      dispatch,
+      diceId,
+      withAces,
+    ],
+  );
+
+  const handleChangeRoll = useCallback(
+    (id, value) => {
+      dispatch(updateRollResult({
+        id,
+        value,
+      }));
+    },
+    [dispatch],
+  );
+
+  const handleDeleteRoll = useCallback(
+    (id, value) => {
+      dispatch(deleteRollResult({
+        id,
+        value,
+      }));
+    },
+    [dispatch],
+  );
 
   const totalModifier = useMemo(
     () => (
@@ -36,16 +73,27 @@ function Roll () {
     () => rollsData && rollsData.map((data) => (
       <Col
         key={data.id}
-        md={6}
+        md={12}
       >
         <RollResult
+          id={data.id}
           dice={data.dice.title}
           rolls={data.result}
-          modifier={data.modifier}
+          max={data.dice.value}
+          modifiers={data.modifiers}
+          success={data.success}
+          onAddRoll={handleAddRoll}
+          onChangeRoll={handleChangeRoll}
+          onDeleteRoll={handleDeleteRoll}
         />
       </Col>
     )),
-    [rollsData],
+    [
+      rollsData,
+      handleAddRoll,
+      handleChangeRoll,
+      handleDeleteRoll,
+    ],
   );
 
   useEffect(

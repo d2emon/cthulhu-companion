@@ -1,12 +1,34 @@
-import { useMemo } from 'react';
-import { Card } from 'react-bootstrap';
+import { useCallback, useMemo } from 'react';
+import { Badge, Button, Card, Container, Form } from 'react-bootstrap';
+import CommonField from './fields/CommonField';
+import RollField from './fields/RollField';
 
 function RollResult ({
+  id,
   dice,
   difficulty,
-  modifier,
+  max,
+  modifiers,
   rolls,
+  success,
+  onAddRoll,
+  onChangeRoll,
+  onDeleteRoll,
 }) {
+  const modifier = useMemo(
+    () => (
+      modifiers
+        ? modifiers.reduce(
+          (total, modifier) => (total + modifier.value),
+          0,
+        )
+        : 0
+    ),
+    [
+      modifiers,
+    ],
+  );
+
   const total = useMemo(
     () => rolls.reduce(
       (result, roll) => (roll ? (result + roll.value) : 0),
@@ -18,44 +40,101 @@ function RollResult ({
     ],
   );
 
-  const rollsText = useMemo(
-    () => rolls.reduce(
-      (result, roll, id) => ((id > 0)
-        ? `${result} + ${roll ? roll.value : 0}`
-        : `${roll ? roll.value : 0}`
-      ),
+  const modifierText = useMemo(
+    () => modifiers.reduce(
+      (result, modifier) => {
+        const { value } = modifier;
+        console.log(result, value);
+        if (value > 0) {
+          return `${result} + ${value}`;
+        }
+        if (value < 0) {
+          return `${result} - ${Math.abs(value)}`;
+        }
+        return result;
+      },
       '',
     ),
-    [rolls],
+    [modifiers],
   );
 
-  const modifierText = useMemo(
+  const handleAddValue = useCallback(
     () => {
-      if (modifier > 0) {
-        return `+ ${modifier}`;
+      if (onAddRoll) {
+        onAddRoll(id);
       }
-      if (modifier < 0) {
-        return `- ${Math.abs(modifier)}`;
-      }
-      return null;
     },
-    [modifier],
+    [
+      id,
+      onAddRoll,
+    ],
+  );
+
+  const handleChangeValue = useCallback(
+    (value) => {
+      if (onChangeRoll) {
+        onChangeRoll(id, value);        
+      }
+    },
+    [
+      id,
+      onChangeRoll,
+    ],
+  );
+
+  const handleDeleteRoll = useCallback(
+    (value) => {
+      if (onDeleteRoll) {
+        onDeleteRoll(id, value);
+      }
+    },
+    [
+      id,
+      onDeleteRoll,
+    ],
   );
 
   return (
     <Card className="my-2">
       <Card.Header>
         { dice }
+        <Container className="my-2">
+          <Button onClick={handleAddValue}>
+            Добавить
+          </Button>
+        </Container>
       </Card.Header>
 
       <Card.Body>
-        { rollsText }
-        {' '}
-        { modifierText }
+        { rolls && rolls.map((roll) => (
+          <Form.Group key={roll.id}>
+            <Form.Label>Бросок</Form.Label>
+            <RollField
+              id={roll.id}
+              isAce={roll.isAce}
+              max={max}
+              value={roll.value}
+              onChange={handleChangeValue}
+              onRemove={handleDeleteRoll}
+            />
+          </Form.Group>
+        ))}
+
+        <Form.Group>
+          <Form.Label>Модификатор</Form.Label>
+          <CommonField
+            readOnly
+            value={modifierText}
+          />
+        </Form.Group>
       </Card.Body>
 
       <Card.Footer>
         { total }
+        {' '}
+        { success && (
+          <Badge bg="success">Успех</Badge>
+        ) }
       </Card.Footer>
     </Card>
   );
