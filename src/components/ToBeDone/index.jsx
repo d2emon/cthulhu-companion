@@ -40,10 +40,6 @@ function ToBeDone() {
 
           <hr />
 
-          <Roll />
-
-          <hr />
-
           <Row>
             <Col md={3}>
                 <Link to="/bestiary">5e Bestiary</Link>
