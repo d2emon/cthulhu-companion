@@ -160,6 +160,10 @@ export const rollSlice = createSlice({
   name: 'roll',
   initialState,
   reducers: {
+    setModifiers: (state, action) => ({
+      ...state,
+      modifiers: action.payload,
+    }),
     setRolls: (state, action) => ({
       ...state,
       rolls: action.payload,
@@ -192,10 +196,12 @@ export const rollSlice = createSlice({
 });
 
 export const {
+  setModifiers,
   setRolls,
 } = rollSlice.actions;
   
 export const selectDice = (state) => state.roll.dice;
+export const selectModifiers = (state) => state.roll.modifiers;
 export const selectRolls = (state) => state.roll.rolls;
 
 export default rollSlice.reducer;

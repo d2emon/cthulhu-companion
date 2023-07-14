@@ -3,6 +3,7 @@ import { Form } from 'react-bootstrap';
 
 function CheckboxField ({
   type,
+  label,
   value,
   onChange,
 }) {
@@ -19,6 +20,7 @@ function CheckboxField ({
   return (
     <Form.Check
       type={type}
+      label={label}
       checked={value}
       onChange={handleChange}
     />

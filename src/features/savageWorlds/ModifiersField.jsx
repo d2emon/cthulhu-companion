@@ -98,10 +98,7 @@ function ModifiersField ({
       const oldValues = values || [];  
       updateValues(oldValues.map((value) => (
         (value.id === newValue.id)
-          ? {
-            ...value,
-            value: newValue,
-          }
+          ? newValue
           : value
       )));
     },
@@ -124,6 +121,7 @@ function ModifiersField ({
           <ButtonGroup>
             <AddModifierButton
               label="Добавить"
+              title=""
               value={0}
               onClick={handleAddValue}
             />
