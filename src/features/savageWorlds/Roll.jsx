@@ -1,29 +1,19 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Card, Col, Container, Form, Row } from 'react-bootstrap';
-import {
-  GiD4, GiDiceSixFacesSix, GiDiceEightFacesEight,
-  GiD10, GiD12, GiDiceTarget
-} from 'react-icons/gi';
 import CheckboxField from './fields/CheckboxField';
 import CommonField from './fields/CommonField';
 import DiceField from './fields/DiceField';
 import RollResult from './RollResult';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  addRollResult, deleteRollResult, doRoll, selectModifiers, selectRolls, setDice, updateRollResult
+  addRollResult, deleteRollResult, doRoll, selectModifiers, selectRolls, setDice, setModifiers, updateRollResult
 } from './rollSlice';
 import ModifiersModal from './modals/ModifiersModal';
-
-const diceIcons = {
-  d4: <GiD4 />,
-  d6: <GiDiceSixFacesSix />,
-  d8: <GiDiceEightFacesEight />,
-  d10: <GiD10 />,
-  d12: <GiD12 />,
-};
+import DiceIcon from './DiceIcon';
 
 function ModifierList ({
   modifiers,
+  onSave,
 }) {
   const [showModifiersModal, setShowModifiersModal] = useState(false);
 
@@ -59,7 +49,9 @@ function ModifierList ({
     <Card className="my-2">
       <ModifiersModal
         show={showModifiersModal}
+        modifiers={modifiers}
         onHide={handleHideModifiersModals}
+        onSave={onSave}
       />
 
       <Card.Header>
@@ -77,26 +69,30 @@ function ModifierList ({
         </Row>
       </Card.Header>
 
-      { modifiers && <Card.Body>
-        { modifiers.map((modifier) => (
-          <Row key={modifier.id}>
-            <Col>{ modifier.title }</Col>
-            <Col>
-              { (modifier.value >= 0)
-                 ? `+${modifier.value}`
-                 : `-${-modifier.value}`
-              }
-            </Col>
-          </Row>
-        )) }
-      </Card.Body> }
+      { (modifiers && modifiers.length > 0) && (
+        <>
+          <Card.Body>
+            { modifiers.map((modifier) => (
+              <Row key={modifier.id}>
+                <Col>{ modifier.title }</Col>
+                <Col>
+                  { (modifier.value >= 0)
+                    ? `+${modifier.value}`
+                    : `-${-modifier.value}`
+                  }
+                </Col>
+              </Row>
+            )) }
+          </Card.Body>
 
-      { modifiers && <Card.Footer>
-        <Row>
-          <Col>Итого</Col>
-          <Col>{ total }</Col>
-        </Row>
-     </Card.Footer> }
+          <Card.Footer>
+            <Row>
+              <Col>Итого</Col>
+              <Col>{ total }</Col>
+            </Row>
+          </Card.Footer>
+        </>
+      ) }
     </Card>
   );
 }
@@ -111,9 +107,13 @@ function Roll () {
   const modifiers = useSelector(selectModifiers);
   const rollsData = useSelector(selectRolls);
 
-  const diceIcon = useMemo(
-    () => (diceIcons[diceId] || <GiDiceTarget />),
-    [diceId],
+  const handleSaveModifiers = useCallback(
+    (value) => {
+      dispatch(setModifiers(value));
+    },
+    [
+      dispatch,
+    ],
   );
 
   const handleAddRoll = useCallback(
@@ -227,7 +227,7 @@ function Roll () {
     <Container>
       <Form>
         <Form.Group>
-          <Form.Label>Кость {diceIcon}</Form.Label>
+          <Form.Label>Кость <DiceIcon diceId={diceId} /></Form.Label>
           <DiceField
             value={diceId}
             onChange={setDiceId}
@@ -236,6 +236,7 @@ function Roll () {
 
         <ModifierList
           modifiers={modifiers}
+          onSave={handleSaveModifiers}
         />
 
         <Form.Group>

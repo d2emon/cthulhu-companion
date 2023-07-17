@@ -71,7 +71,7 @@ function ModifiersField ({
       updateValues([
         ...newValues,
         {
-          id: newValues.length,
+          id: crypto.randomUUID(),
           ...value,
         },
       ]);

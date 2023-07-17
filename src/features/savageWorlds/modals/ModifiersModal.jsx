@@ -1,23 +1,39 @@
+import { useCallback, useEffect, useState } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import ModifiersField from '../ModifiersField';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectModifiers, setModifiers } from '../rollSlice';
-import { useCallback } from 'react';
 
 function ModifiersModal ({
   show,
   onHide,
+  modifiers,
+  onSave,
 }) {
-  const dispatch = useDispatch();
+  const [value, setValue] = useState([]);
 
-  const modifiers = useSelector(selectModifiers);
+  const handleSave = useCallback(
+    () => {
+      if (onSave) {
+        onSave(value);
+      }
 
-  const handleChange = useCallback(
-    (value) => {
-      dispatch(setModifiers(value));
+      if (onHide) {
+        onHide();
+      }
     },
     [
-      dispatch,
+      value,
+      onHide,
+      onSave,
+    ],
+  );
+
+  useEffect(
+    () => {
+      setValue(modifiers);
+    },
+    [
+      modifiers,
+      show,
     ],
   );
 
@@ -32,17 +48,23 @@ function ModifiersModal ({
 
       <Modal.Body>
         <ModifiersField
-          values={modifiers}
-          onChange={handleChange}
+          values={value}
+          onChange={setValue}
         />
       </Modal.Body>
 
       <Modal.Footer>
         <Button
-          variant="secondary"
+          variant="success"
+          onClick={handleSave}
+        >
+          Сохранить
+        </Button>
+        <Button
+          variant="warning"
           onClick={onHide}
         >
-          Закрыть
+          Отменить
         </Button>
       </Modal.Footer>
     </Modal>
