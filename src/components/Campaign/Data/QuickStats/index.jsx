@@ -1,10 +1,9 @@
 import React, { useCallback } from 'react';
-import { Button, Badge, Card, Col, Container, Image, Row } from 'react-bootstrap';
-import { GiRuleBook } from 'react-icons/gi';
+import { Button, Badge, Card, Col, Container, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import moment from 'moment';
 
 import './QuickStats.css';
-import moment from 'moment';
 
 function QuickStats({
     gameSystem,
@@ -63,8 +62,8 @@ function QuickStats({
                                 onClick={handleFansClick}
                             >
                                 <dl>
-                                    <dd class="count-value">{fans}</dd>
-                                    <dd class="count-label">fans</dd>
+                                    <dd className="count-value">{fans}</dd>
+                                    <dd className="count-label">fans</dd>
                                 </dl>
                             </Button>
                         </Col>
@@ -80,8 +79,8 @@ function QuickStats({
                                 onClick={handleCommentsClick}
                             >
                                 <dl>
-                                    <dd class="count-value">{comments}</dd>
-                                    <dd class="count-label">comments</dd>
+                                    <dd className="count-value">{comments}</dd>
+                                    <dd className="count-label">comments</dd>
                                 </dl>
                             </Button>
                         </Col>
