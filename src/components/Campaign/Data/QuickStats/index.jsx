@@ -62,8 +62,8 @@ function QuickStats({
                                 onClick={handleFansClick}
                             >
                                 <dl>
-                                    <dd class="count-value">{fans}</dd>
-                                    <dd class="count-label">fans</dd>
+                                    <dd className="count-value">{fans}</dd>
+                                    <dd className="count-label">fans</dd>
                                 </dl>
                             </Button>
                         </Col>
@@ -79,8 +79,8 @@ function QuickStats({
                                 onClick={handleCommentsClick}
                             >
                                 <dl>
-                                    <dd class="count-value">{comments}</dd>
-                                    <dd class="count-label">comments</dd>
+                                    <dd className="count-value">{comments}</dd>
+                                    <dd className="count-label">comments</dd>
                                 </dl>
                             </Button>
                         </Col>
