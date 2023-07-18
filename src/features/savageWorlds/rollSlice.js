@@ -160,6 +160,10 @@ export const rollSlice = createSlice({
   name: 'roll',
   initialState,
   reducers: {
+    setDifficulty: (state, action) => ({
+      ...state,
+      difficulty: action.payload,
+    }),
     setModifiers: (state, action) => ({
       ...state,
       modifiers: action.payload,
@@ -167,6 +171,10 @@ export const rollSlice = createSlice({
     setRolls: (state, action) => ({
       ...state,
       rolls: action.payload,
+    }),
+    setWithAces: (state, action) => ({
+      ...state,
+      withAces: action.payload,
     }),
   },
   extraReducers: (builder) => {
@@ -196,12 +204,16 @@ export const rollSlice = createSlice({
 });
 
 export const {
+  setDifficulty,
   setModifiers,
   setRolls,
+  setWithAces,
 } = rollSlice.actions;
   
-export const selectDice = (state) => state.roll.dice;
+export const selectDiceId = (state) => state.roll.diceId;
+export const selectDifficulty = (state) => state.roll.difficulty;
 export const selectModifiers = (state) => state.roll.modifiers;
 export const selectRolls = (state) => state.roll.rolls;
+export const selectWithAces = (state) => state.roll.withAces;
 
 export default rollSlice.reducer;

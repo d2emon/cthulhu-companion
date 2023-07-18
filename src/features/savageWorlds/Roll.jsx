@@ -1,15 +1,15 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Button, Card, Col, Container, Form, Row } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
 import CheckboxField from './fields/CheckboxField';
 import CommonField from './fields/CommonField';
 import DiceField from './fields/DiceField';
-import RollResult from './RollResult';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  addRollResult, deleteRollResult, doRoll, selectModifiers, selectRolls, setDice, setModifiers, updateRollResult
-} from './rollSlice';
 import ModifiersModal from './modals/ModifiersModal';
 import DiceIcon from './DiceIcon';
+import {
+  selectDiceId, selectDifficulty, selectModifiers, selectWithAces, setDice, setDifficulty,
+  setModifiers, setWithAces,
+} from './rollSlice';
 
 function ModifierList ({
   modifiers,
@@ -100,12 +100,28 @@ function ModifierList ({
 function Roll () {
   const dispatch = useDispatch();
 
-  const [diceId, setDiceId] = useState('d4');
-  const [difficulty, setDifficulty] = useState(4);
-  const [withAces, setWithAces] = useState(true);
-
+  const diceId = useSelector(selectDiceId);
+  const difficulty = useSelector(selectDifficulty);
   const modifiers = useSelector(selectModifiers);
-  const rollsData = useSelector(selectRolls);
+  const withAces = useSelector(selectWithAces);
+
+  const handleSaveDice = useCallback(
+    (value) => {
+      dispatch(setDice(value));
+    },
+    [
+      dispatch,
+    ],
+  );
+
+  const handleSaveDifficulty = useCallback(
+    (value) => {
+      dispatch(setDifficulty(value));
+    },
+    [
+      dispatch,
+    ],
+  );
 
   const handleSaveModifiers = useCallback(
     (value) => {
@@ -116,109 +132,11 @@ function Roll () {
     ],
   );
 
-  const handleAddRoll = useCallback(
-    (id) => {
-      dispatch(addRollResult({
-        id,
-        options: {
-          diceId,
-          withAces,
-        },
-      }));
+  const handleSaveWithAces = useCallback(
+    (value) => {
+      dispatch(setWithAces(value));
     },
     [
-      dispatch,
-      diceId,
-      withAces,
-    ],
-  );
-
-  const handleChangeRoll = useCallback(
-    (id, value) => {
-      dispatch(updateRollResult({
-        id,
-        value,
-      }));
-    },
-    [dispatch],
-  );
-
-  const handleDeleteRoll = useCallback(
-    (id, value) => {
-      dispatch(deleteRollResult({
-        id,
-        value,
-      }));
-    },
-    [dispatch],
-  );
-
-  const totalModifier = useMemo(
-    () => (
-      modifiers
-        ? modifiers.reduce(
-          (total, modifier) => (total + modifier.value),
-          0,
-        )
-        : 0
-    ),
-    [
-      modifiers,
-    ],
-  );
-
-  const rolls = useMemo(
-    () => rollsData && rollsData.map((data) => (
-      <Col
-        key={data.id}
-        md={12}
-      >
-        <RollResult
-          id={data.id}
-          dice={data.dice.title}
-          raises={data.raises}
-          rolls={data.result}
-          max={data.dice.value}
-          modifiers={data.modifiers}
-          success={data.success}
-          onAddRoll={handleAddRoll}
-          onChangeRoll={handleChangeRoll}
-          onDeleteRoll={handleDeleteRoll}
-        />
-      </Col>
-    )),
-    [
-      rollsData,
-      handleAddRoll,
-      handleChangeRoll,
-      handleDeleteRoll,
-    ],
-  );
-
-  useEffect(
-    () => {
-      dispatch(setDice(diceId));
-    },
-    [
-      diceId,
-      dispatch,
-    ],
-  );
-
-  const addRoll = useCallback(
-    () => {
-      dispatch(doRoll({
-        diceId,
-        difficulty,
-        modifiers,
-        withAces,  
-      }));
-    },
-    [
-      diceId,
-      difficulty,
-      modifiers,
-      withAces,
       dispatch,
     ],
   );
@@ -230,7 +148,7 @@ function Roll () {
           <Form.Label>Кость <DiceIcon diceId={diceId} /></Form.Label>
           <DiceField
             value={diceId}
-            onChange={setDiceId}
+            onChange={handleSaveDice}
           />
         </Form.Group>
 
@@ -244,7 +162,7 @@ function Roll () {
             type="checkbox"
             label="Взрывной бросок"
             value={withAces}
-            onChange={setWithAces}
+            onChange={handleSaveWithAces}
           />
         </Form.Group>
 
@@ -253,26 +171,10 @@ function Roll () {
           <CommonField
             type="number"
             value={difficulty}
-            onChange={setDifficulty}
+            onChange={handleSaveDifficulty}
           />
         </Form.Group>
-
       </Form>
-
-      <Container>
-          <div>DiceId: {diceId}</div>
-          <div>Difficulty: {difficulty}</div>
-          <div>Modifier: {totalModifier}</div>
-      </Container>
-
-      <Container>
-          <Button onClick={addRoll}>
-            Бросить
-          </Button>
-          <Row>
-            { rolls }
-          </Row>
-      </Container>
     </Container>
   );
 }

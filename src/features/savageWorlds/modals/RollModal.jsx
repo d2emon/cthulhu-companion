@@ -1,10 +1,42 @@
+import { useCallback } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import Roll from '../Roll';
+import { useDispatch, useSelector } from 'react-redux';
+import { doRoll, selectDiceId, selectDifficulty, selectModifiers, selectWithAces } from '../rollSlice';
 
 function RollModal ({
   show,
   onHide,
 }) {
+  const dispatch = useDispatch();
+
+  const diceId = useSelector(selectDiceId);
+  const difficulty = useSelector(selectDifficulty);
+  const modifiers = useSelector(selectModifiers);
+  const withAces = useSelector(selectWithAces);
+
+  const addRoll = useCallback(
+    () => {
+      dispatch(doRoll({
+        diceId,
+        difficulty,
+        modifiers,
+        withAces,  
+      }));
+      if (onHide) {
+        onHide();
+      }
+    },
+    [
+      dispatch,
+      diceId,
+      difficulty,
+      modifiers,
+      withAces,
+      onHide,
+    ],
+  );
+
   return (
     <Modal
       show={show}
@@ -20,10 +52,16 @@ function RollModal ({
 
       <Modal.Footer>
         <Button
-          variant="secondary"
+          variant="success"
+          onClick={addRoll}
+        >
+          Бросить
+        </Button>
+        <Button
+          variant="warning"
           onClick={onHide}
         >
-          Закрыть
+          Отменить
         </Button>
       </Modal.Footer>
     </Modal>
