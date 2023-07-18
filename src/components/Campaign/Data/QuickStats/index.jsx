@@ -1,10 +1,9 @@
 import React, { useCallback } from 'react';
-import { Button, Badge, Card, Col, Container, Image, Row } from 'react-bootstrap';
-import { GiRuleBook } from 'react-icons/gi';
+import { Button, Badge, Card, Col, Container, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import moment from 'moment';
 
 import './QuickStats.css';
-import moment from 'moment';
 
 function QuickStats({
     gameSystem,
