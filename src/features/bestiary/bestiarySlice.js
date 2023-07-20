@@ -171,7 +171,6 @@ export const bestiarySlice = createSlice({
 });
 
 export const {
-  getBestiary,
   searchTitle,
   setFavourites,
   setOrder,
