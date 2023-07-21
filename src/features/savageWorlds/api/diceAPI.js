@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import dices from '../dice/dices';
 
 const timeoutDecorator = (fn) => (resolve, reject) => setTimeout(
@@ -29,67 +30,98 @@ const mockAPI = (mock) => (req) => {
   return new Promise(timeoutDecorator(wrapper));
 }
 
-const getDice = (diceId) => {
-  const dice = dices.find(({ id }) => (id === diceId));
+const DEFAULT_OPTIONS = {
+  difficulty: 0,
+  modifiers: [],
+  withAces: false,
+};
 
-  if (!dice) {
-    return null;
-  }
-
+const rollDice = (dice) => () => {
+  const value = Math.floor(Math.random() * dice.value) + 1;
   return {
-    ...dice,
-    data: dice,
-    roll: (id) => {
-      const value = Math.floor(Math.random() * dice.value) + 1;
-      return {
-        id,
-        value,
-        isAce: (value === dice.value),
-      };      
+    id: crypto.randomUUID(),
+    value,
+    isAce: (value === dice.value),
+  };
+};
+
+const withOptions = (fn) => (args) => {
+  const {
+    query = {},
+    data = {},
+  } = args;
+  const options = {
+    ...DEFAULT_OPTIONS,
+    ...query,
+    ...data,
+  };
+  return fn({
+    ...args,
+    options,
+  });  
+};
+
+const withDice = (fn) => withOptions((args) => {
+  const {
+    options: {
+      diceId,
+    },
+  } = args;
+
+  const dice = dices.find(({ id }) => (id === diceId)) || null;
+
+  return fn({
+    ...args,
+    dice,
+  });  
+});
+
+const withRolls = fn => withDice((args) => {
+  const {
+    options: {
+      withAces,
+    },
+    dice,
+  } = args;
+
+  const getRolls = () => {
+    const result = [];
+    
+    if (!dice) {
+      return result;
     }
-  }
-}
 
-const getDiceData = ({
-  diceId,
-}) => {
-  const dice = getDice(diceId);
-  return dice ? dice.data : null;
-};
+    const roller = rollDice(dice);
+    let reroll = true;
+    while (reroll) {
+      const roll = roller();
+      result.push(roll);
+          
+      reroll = withAces && roll && roll.isAce;
+    }
+    return result;  
+  };
 
-const getRolls = ({
-  diceId,
-  withAces,
-}) => {
-  const dice = getDice(diceId);
- 
-  const result = [];
-  let reroll = true;
-  while (reroll) {
-    const id = crypto.randomUUID();
-    const roll = dice.roll(id);
-    result.push(roll);
-      
-    reroll = withAces && roll && roll.isAce;
-  }
-  
-  return result;
-};
+  return fn({
+    ...args,
+    result: getRolls(),
+  });  
+});
 
-const setRollData = (
-  {
-    diceId,
-  },
-  {
+const getDiceData = withDice(({ dice }) => (dice));
+
+const getRolls = withRolls(({ result }) => (result));
+
+const setRollData = withRolls(({
+  options: {
     difficulty,
     modifiers,
-    result,
     withAces,
   },
-) => {
+  dice,
+  result,
+}) => {
   const id = crypto.randomUUID();
-  const dice = getDice(diceId);
- 
   const modifier = modifiers
     ? modifiers.reduce((total, modifier) => (total + modifier.value), 0)
     : 0;
@@ -99,7 +131,7 @@ const setRollData = (
   
   return {
     id,
-    dice: dice.data,
+    dice,
     difficulty,
     modifiers,
     raises,
@@ -108,32 +140,8 @@ const setRollData = (
     success,
     withAces,
   };
-};
-  
-export const fetchDice = mockAPI(({ query }) => getDiceData(query));
-export const fetchRolls = mockAPI(({ query }) => getRolls(query));
-export const fetchRollData = mockAPI(({ query, data }) => {
-  const {
-    diceId,
-  } = query;
-  const {
-    difficulty,
-    modifiers,
-    withAces,
-  } = data;
-  const result = getRolls({
-    diceId,
-    withAces,
-  });
-  return setRollData(
-    {
-      diceId,
-    },
-    {
-      difficulty,
-      modifiers,
-      result,
-      withAces,
-    }
-  );
 });
+  
+export const fetchDice = mockAPI(getDiceData);
+export const fetchRolls = mockAPI(getRolls);
+export const fetchRollData = mockAPI(setRollData);
