@@ -1,11 +1,22 @@
-import diceData from '../dice/dices';
+import diceData from './dices';
 import {
   fetchDice,
   fetchRolls,
   fetchRollData,
+  fetchDiceList,
 } from './diceAPI';
 
 describe('DiceAPI', () => {
+  it('should handle fetchDiceList', async () => {
+    const response = await fetchDiceList({
+      query: {},
+      data: {},
+    });
+
+    expect(response.error).toBeNull();
+    expect(response.data).toEqual(diceData);
+  });
+
   it('should handle fetchDice', async () => {
     const response = await fetchDice({
       query: {},
@@ -19,7 +30,7 @@ describe('DiceAPI', () => {
 
     // expect(data).toEqual({});
   });
-    
+
   it('should handle fetchDice for d4-d12', async () => {
     Promise.all(diceData.map((dice) => new Promise(async (res, rej) => {
       const {

@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
 import { Form } from 'react-bootstrap';
-import dices from '../dice/dices';
 
 function DiceField ({
+  dices,
   value,
   onChange,
 }) {
@@ -21,7 +21,7 @@ function DiceField ({
       value={value}
       onChange={handleChangeDice}
     >
-      { dices.map((item) => (
+      { dices && dices.map((item) => (
         <option
           key={item.id}
           value={item.id}

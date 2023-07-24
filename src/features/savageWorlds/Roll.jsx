@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Card, Col, Container, Form, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import CheckboxField from './fields/CheckboxField';
@@ -7,7 +7,8 @@ import DiceField from './fields/DiceField';
 import ModifiersModal from './modals/ModifiersModal';
 import DiceIcon from './DiceIcon';
 import {
-  selectDiceId, selectDifficulty, selectModifiers, selectWithAces, setDice, setDifficulty,
+  loadDiceList,
+  selectDiceId, selectDices, selectDifficulty, selectModifiers, selectWithAces, setDice, setDifficulty,
   setModifiers, setWithAces,
 } from './rollSlice';
 
@@ -100,6 +101,7 @@ function ModifierList ({
 function Roll () {
   const dispatch = useDispatch();
 
+  const dices = useSelector(selectDices);
   const diceId = useSelector(selectDiceId);
   const difficulty = useSelector(selectDifficulty);
   const modifiers = useSelector(selectModifiers);
@@ -141,12 +143,22 @@ function Roll () {
     ],
   );
 
+  useEffect(
+    () => {
+      dispatch(loadDiceList());
+    },
+    [
+      dispatch,
+    ],
+  );
+
   return (
     <Container>
       <Form>
         <Form.Group>
           <Form.Label>Кость <DiceIcon diceId={diceId} /></Form.Label>
           <DiceField
+            dices={dices}
             value={diceId}
             onChange={handleSaveDice}
           />

@@ -1,8 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { fetchDice, fetchRollData, fetchRolls } from './api/diceAPI';
+import { fetchDice, fetchDiceList, fetchRollData, fetchRolls } from './api/diceAPI';
 
 const initialState = {
   diceId: 'd4',
+  dices: [],
   difficulty: 4,
   modifiers: [],
   rolls: [],
@@ -57,6 +58,21 @@ export const setDice = createAsyncThunk(
   },
 );
 
+export const loadDiceList = createAsyncThunk(
+  'roll/loadDiceList',
+  async (force, thunkAPI) => {
+    const {
+      dices,
+    } = thunkAPI.getState().roll;
+
+    if (!force && dices) {
+      return dices;
+    }
+
+    const result = await fetchDiceList({});
+    return result.data;
+  },
+)
 
 export const doRoll = createAsyncThunk(
   'roll/doRoll',
@@ -179,6 +195,14 @@ export const rollSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(loadDiceList.pending, (state) => ({
+        ...state,
+        dices: null,
+      }))
+      .addCase(loadDiceList.fulfilled, (state, action) => ({
+        ...state,
+        dices: action.payload,
+      }))
       .addCase(setDice.fulfilled, (state, action) => ({
         ...state,
         diceId: action.payload.diceId,
@@ -210,6 +234,7 @@ export const {
   setWithAces,
 } = rollSlice.actions;
   
+export const selectDices = (state) => state.roll.dices;
 export const selectDiceId = (state) => state.roll.diceId;
 export const selectDifficulty = (state) => state.roll.difficulty;
 export const selectModifiers = (state) => state.roll.modifiers;

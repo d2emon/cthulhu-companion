@@ -1,34 +1,6 @@
-import crypto from 'crypto';
-import dices from '../dice/dices';
+import dices from './dices';
+import { createId, mockRequest } from './APIhelper';
 
-const timeoutDecorator = (fn) => (resolve, reject) => setTimeout(
-  () => fn(resolve, reject),
-  500,
-);
-
-const mockAPI = (mock) => (req) => {
-  const wrapper = (resolve, reject) => {
-    try {
-      console.log('REQ:', req);
-      const data = mock(req);
-      const res = {
-        data,
-        error: null,
-      };
-      console.log('RES:', res);
-      return resolve(res);
-    } catch (e) {
-      const res = {
-        data: null,
-        error: e.message,
-      };
-      console.error('ERR:', res);
-      return reject(res);
-    }
-  };
-
-  return new Promise(timeoutDecorator(wrapper));
-}
 
 const DEFAULT_OPTIONS = {
   difficulty: 0,
@@ -37,31 +9,36 @@ const DEFAULT_OPTIONS = {
 };
 
 const rollDice = (dice) => () => {
+  const id = createId();
   const value = Math.floor(Math.random() * dice.value) + 1;
+  const isAce = value === dice.value;
+
   return {
-    id: crypto.randomUUID(),
+    id,
     value,
-    isAce: (value === dice.value),
+    isAce,
   };
 };
 
-const withOptions = (fn) => (args) => {
+const withOptions = fn => args => {
   const {
     query = {},
     data = {},
   } = args;
+
   const options = {
     ...DEFAULT_OPTIONS,
     ...query,
     ...data,
   };
+
   return fn({
     ...args,
     options,
   });  
 };
 
-const withDice = (fn) => withOptions((args) => {
+const withDice = fn => withOptions((args) => {
   const {
     options: {
       diceId,
@@ -108,10 +85,6 @@ const withRolls = fn => withDice((args) => {
   });  
 });
 
-const getDiceData = withDice(({ dice }) => (dice));
-
-const getRolls = withRolls(({ result }) => (result));
-
 const setRollData = withRolls(({
   options: {
     difficulty,
@@ -121,7 +94,7 @@ const setRollData = withRolls(({
   dice,
   result,
 }) => {
-  const id = crypto.randomUUID();
+  const id = createId();
   const modifier = modifiers
     ? modifiers.reduce((total, modifier) => (total + modifier.value), 0)
     : 0;
@@ -141,7 +114,21 @@ const setRollData = withRolls(({
     withAces,
   };
 });
-  
-export const fetchDice = mockAPI(getDiceData);
-export const fetchRolls = mockAPI(getRolls);
-export const fetchRollData = mockAPI(setRollData);
+
+export const fetchDiceList = mockRequest(() => {
+  return dices.map(dice => ({ ...dice }));
+});
+
+export const fetchDice = mockRequest(
+  withDice(
+    ({ dice }) => dice,
+  ),
+);
+
+export const fetchRolls = mockRequest(
+  withRolls(
+    ({ result }) => result,
+  ),
+);
+
+export const fetchRollData = mockRequest(setRollData);
