@@ -133,25 +133,4 @@ describe('CheckboxField with radio type', () => {
     expect(onChange).toBeCalled();
     expect(onChange.mock.calls[0][0]).toBeTruthy();
   });
-
-  /*
-  it('handles checked click', async () => {
-    const user = userEvent.setup();
-    const onChange = jest.fn();
-
-    render(<CheckboxField
-      type="radio"
-      value={true}
-      onChange={onChange}
-    />);
-
-    const checkbox = screen.getByRole('radio');
-    expect(checkbox.checked).toBeTruthy();
-
-    await user.click(checkbox);
-
-    expect(onChange).toBeCalled();
-    expect(onChange.mock.calls[0][0]).toBeTruthy();
-  });
-  */
 });
