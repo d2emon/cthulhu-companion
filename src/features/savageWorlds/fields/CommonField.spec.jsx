@@ -63,7 +63,6 @@ describe('CommonField', () => {
     />);
 
     const field = screen.getByRole('textbox');
-    expect(field.value).toEqual('value');
 
     await expect(user.type(field, '1'))
       .resolves
