@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Button, Card, Col, Container, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -123,6 +123,13 @@ function RollList () {
     },
     [dispatch],
   );
+
+  useEffect(
+    () => {
+      console.log(rollsData);
+    },
+    [rollsData],
+  )
 
   return (
     <Card>

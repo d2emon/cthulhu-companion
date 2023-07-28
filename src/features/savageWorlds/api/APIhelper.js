@@ -1,5 +1,3 @@
-import crypto from 'crypto';
-
 const timeoutDecorator = (fn) => new Promise((resolve, reject) => setTimeout(
   () => fn(resolve, reject),
   500,

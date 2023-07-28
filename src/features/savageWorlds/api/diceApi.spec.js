@@ -6,6 +6,8 @@ import {
   fetchDiceList,
 } from './diceAPI';
 
+global.crypto = require('crypto');
+
 describe('DiceAPI', () => {
   it('should handle fetchDiceList', async () => {
     const response = await fetchDiceList({
@@ -25,10 +27,6 @@ describe('DiceAPI', () => {
 
     expect(response.error).toBeNull();
     expect(response.data).toBeNull();
-
-    // const { data } = response;
-
-    // expect(data).toEqual({});
   });
 
   it('should handle fetchDice for d4-d12', async () => {

@@ -43,11 +43,7 @@ function RollField ({
 
   return (
     <InputGroup>
-      { isAce && (
-        <span data-testid="ace-badge">
-          <Badge bg="success">Взрыв</Badge>
-        </span>
-      ) }
+      { isAce && (<Badge bg="success" data-testid="ace-badge">Взрыв</Badge>) }
 
       <CommonField
         type="number"

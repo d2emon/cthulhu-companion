@@ -1,5 +1,7 @@
 import { createId, mockRequest } from './APIhelper';
 
+global.crypto = require('crypto');
+
 const mockResponse = () => 'RESPONSE';
 const mockError = () => {
   throw new Error('Mocked error');
