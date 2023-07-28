@@ -39,11 +39,14 @@ function RollModal ({
 
   return (
     <Modal
+      data-testid="roll-modal"
       show={show}
       onHide={onHide}
     >
       <Modal.Header>
-        <Modal.Title>Бросок</Modal.Title>
+        <Modal.Title data-testid="modal-title">
+          Бросок
+        </Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
@@ -52,12 +55,14 @@ function RollModal ({
 
       <Modal.Footer>
         <Button
+          data-testid="roll-button"
           variant="success"
           onClick={addRoll}
         >
           Бросить
         </Button>
         <Button
+          data-testid="close-button"
           variant="warning"
           onClick={onHide}
         >

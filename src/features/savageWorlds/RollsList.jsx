@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Button, Card, Col, Container, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -124,13 +124,6 @@ function RollList () {
     [dispatch],
   );
 
-  useEffect(
-    () => {
-      console.log(rollsData);
-    },
-    [rollsData],
-  )
-
   return (
     <Card>
       <RollResultModal
@@ -149,6 +142,7 @@ function RollList () {
 
       <Card.Header>
         <Button
+          data-testid="add-roll-button"
           variant="primary"
           onClick={handleShowRoll}
         >
