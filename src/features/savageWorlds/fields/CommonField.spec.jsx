@@ -35,88 +35,39 @@ describe('CommonField', () => {
     expect(onChange.mock.calls[0][0]).toEqual('value1');
   });
 
-  /*
-  it('handles unchecked click', async () => {
+  it('don\'t run onChange when readOnly', async () => {
     const user = userEvent.setup();
     const onChange = jest.fn();
 
     render(<CommonField
-      type="field"
-      label="field label"
-      value={false}
+      type="text"
+      readOnly
+      value="value"
       onChange={onChange}
     />);
 
     const field = screen.getByRole('textbox');
-    expect(field.checked).toBeFalsy();
+    expect(field.value).toEqual('value');
 
-    await user.click(field);
+    await user.type(field, '1');
 
-    expect(onChange).toBeCalled();
-    expect(onChange.mock.calls[0][0]).toBeTruthy();
+    expect(onChange).not.toBeCalled();
   });
 
-  it('handles unhandled click', async () => {
+  it('throws no error on no onChange', async () => {
     const user = userEvent.setup();
 
     render(<CommonField
-      type="field"
-      label="field label"
-      value={true}
+      type="text"
+      value="value"
     />);
 
     const field = screen.getByRole('textbox');
-    expect(field.checked).toBeTruthy();
+    expect(field.value).toEqual('value');
 
-    await user.click(field);
-
-    expect(field.checked).toBeTruthy();
-  });
-  */
-});
-
-/*
-describe('CommonField with radio type', () => {
-  it('renders checked', async () => {
-    render(<CommonField
-      type="radio"
-      label="radio label"
-      value={true}
-    />);
-
-    const field = screen.getByRole('radio');
-    expect(field.type).toEqual('radio');
-    expect(field.checked).toBeTruthy();
-  });
-
-  it('renders unchecked', async () => {
-    render(<CommonField
-      type="radio"
-      label="radio label"
-      value={false}
-    />);
-
-    const field = screen.getByRole('textbox');
-    expect(field.checked).toBeFalsy();
-  });
-
-  it('handles click', async () => {
-    const user = userEvent.setup();
-    const onChange = jest.fn();
-
-    render(<CommonField
-      type="radio"
-      value={false}
-      onChange={onChange}
-    />);
-
-    const field = screen.getByRole('textbox');
-    expect(field.checked).toBeFalsy();
-
-    await user.click(field);
-
-    expect(onChange).toBeCalled();
-    expect(onChange.mock.calls[0][0]).toBeTruthy();
+    await expect(user.type(field, '1'))
+      .resolves
+      .not
+      .toThrowError();
   });
 });
-*/
