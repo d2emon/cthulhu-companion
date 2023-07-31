@@ -82,17 +82,28 @@ describe('DiceAPI', () => {
     const { data } = response;
 
     // Options
+    expect(data.id).not.toBeNull();
     expect(data.difficulty).toEqual(0);
     expect(data.modifiers).toEqual([]);
     expect(data.withAces).toEqual(false);
 
     // Roll
-    expect(data.id).not.toBeNull();
-    expect(data.dice).toBeNull();
-    expect(data.raises).toEqual(0);
-    expect(data.result).toEqual([]);
-    expect(data.success).toEqual(true);
-    expect(data.total).toEqual(0);
+    expect(data.rolls).not.toBeNull();
+    expect(data.rolls.dice).toBeNull();
+    expect(data.rolls.modified).toEqual(0);
+    expect(data.rolls.raises).toEqual(0);
+    expect(data.rolls.rolls).toEqual([]);
+    expect(data.rolls.success).toEqual(true);
+    expect(data.rolls.total).toEqual(0);
+
+    // Wild Roll
+    expect(data.wildRolls).not.toBeNull();
+    expect(data.wildRolls.dice).toBeNull();
+    expect(data.wildRolls.modified).toEqual(0);
+    expect(data.wildRolls.raises).toEqual(0);
+    expect(data.wildRolls.rolls).toEqual([]);
+    expect(data.wildRolls.success).toEqual(true);
+    expect(data.wildRolls.total).toEqual(0);
   });
 
   it('should sum modifiers', async () => {
@@ -101,7 +112,7 @@ describe('DiceAPI', () => {
       10 - Math.floor(Math.random() * 20),
     ];
     const modifiers = values.map((value) => ({ value }));
-    const total = values.reduce((sum, value) => (sum + value));
+    const total = values.reduce((sum, value) => (sum + value), 0);
     console.log(modifiers, total);
 
     const response = await fetchRollData({
@@ -110,6 +121,7 @@ describe('DiceAPI', () => {
       },
       data: {
         modifiers,
+        wildDiceId: 'd6',
       },
     });
 
@@ -119,18 +131,24 @@ describe('DiceAPI', () => {
     const { data } = response;
 
     // Options
+    expect(data.id).not.toBeNull();
     expect(data.difficulty).toEqual(0);
     expect(data.modifiers).toEqual(modifiers);
     expect(data.withAces).toEqual(false);
 
     // Roll
-    expect(data.id).not.toBeNull();
-    expect(data.dice.id).toEqual('d6');
-    // expect(data.raises).toEqual(0);
-    expect(data.result.length).toEqual(1);
-    // expect(data.success).toEqual(true);
-    expect(data.total).toBeGreaterThan(total);
-    expect(data.total).toBeLessThanOrEqual(total + 6);
+    expect(data.rolls.dice.id).toEqual('d6');
+    expect(data.rolls.rolls.length).toEqual(1);
+    expect(data.rolls.total).toBeLessThanOrEqual(6);
+    expect(data.rolls.modified).toBeGreaterThan(total);
+    expect(data.rolls.modified).toBeLessThanOrEqual(total + 6);
+
+    // Wild Roll
+    expect(data.wildRolls.dice.id).toEqual('d6');
+    expect(data.wildRolls.rolls.length).toEqual(1);
+    expect(data.wildRolls.total).toBeLessThanOrEqual(6);
+    expect(data.wildRolls.modified).toBeGreaterThan(total);
+    expect(data.wildRolls.modified).toBeLessThanOrEqual(total + 6);
   });
 });
     

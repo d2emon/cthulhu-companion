@@ -27,6 +27,7 @@ function RollCard ({
     ],
   );
 
+  console.log(rollDetails);
   return (
     <Card
       data-testid="roll-card"

@@ -56,16 +56,19 @@ const initialState = {
       },
       difficulty: 4,
       modifiers: [],
-      raises: 0,
-      result: [
-        {
-          id: '2b773933-e24a-472e-991f-19e22255cb04',
-          value: 3,
-          isAce: false,
-        },
-      ],
-      total: 3,
-      success: false,
+      rolls: {
+        rolls: [
+          {
+            id: '2b773933-e24a-472e-991f-19e22255cb04',
+            value: 3,
+            isAce: false,
+          },
+        ],
+        modified: 3,
+        raises: 0,
+        total: 3,
+        success: false,
+      },
       withAces: true
     },
     {
@@ -77,16 +80,19 @@ const initialState = {
       },
       difficulty: 4,
       modifiers: [],
-      raises: 0,
-      result: [
-        {
-          id: 'e36ff893-c48f-4017-b6bc-4026039666f2',
-          value: 2,
-          isAce: false
-        },
-      ],
-      total: 2,
-      success: false,
+      rolls: {
+        rolls: [
+          {
+            id: '2b773933-e24a-472e-991f-19e22255cb04',
+            value: 2,
+            isAce: false,
+          },
+        ],
+        modified: 3,
+        raises: 0,
+        total: 2,
+        success: false,
+      },
       withAces: true,
     },
   ],

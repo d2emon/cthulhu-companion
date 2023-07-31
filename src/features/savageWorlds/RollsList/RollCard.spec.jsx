@@ -25,16 +25,20 @@ describe('RollCard', () => {
           },
           difficulty: 4,
           modifiers: [],
-          raises: 0,
-          result: [
-            {
-              id: '2b773933-e24a-472e-991f-19e22255cb04',
-              value: 3,
-              isAce: false,
-            },
-          ],
-          total: 3,
-          success: false,
+          rolls: {
+            rolls: [
+              {
+                id: '2b773933-e24a-472e-991f-19e22255cb04',
+                value: 3,
+                isAce: false,
+              },
+            ],
+            modified: 3,
+            raises: 0,
+            total: 3,
+            success: false,
+          },
+          wildIsBetter: false,
           withAces: true,
         }}
       />
@@ -63,16 +67,19 @@ describe('RollCard', () => {
           },
           difficulty: 4,
           modifiers: [],
-          raises: 0,
-          result: [
-            {
-              id: '2b773933-e24a-472e-991f-19e22255cb04',
-              value: 3,
-              isAce: false,
-            },
-          ],
-          total: 3,
-          success: false,
+          rolls: {
+            rolls: [
+              {
+                id: '2b773933-e24a-472e-991f-19e22255cb04',
+                value: 3,
+                isAce: false,
+              },
+            ],
+            modified: 3,
+            raises: 0,
+            total: 3,
+            success: false,
+          },
           withAces: true,
         }}
         onClick={onClick}
@@ -99,16 +106,19 @@ describe('RollCard', () => {
           },
           difficulty: 4,
           modifiers: [],
-          raises: 0,
-          result: [
-            {
-              id: '2b773933-e24a-472e-991f-19e22255cb04',
-              value: 3,
-              isAce: false,
-            },
-          ],
-          total: 3,
-          success: false,
+          rolls: {
+            rolls: [
+              {
+                id: '2b773933-e24a-472e-991f-19e22255cb04',
+                value: 3,
+                isAce: false,
+              },
+            ],
+            modified: 3,
+            raises: 0,
+            total: 3,
+            success: false,
+          },
           withAces: true,
         }}
       />
