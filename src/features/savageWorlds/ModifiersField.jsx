@@ -146,6 +146,13 @@ function ModifiersField ({
               value={-4}
               onClick={handleAddValue}
             />
+
+            <AddModifierButton
+              label="Неумелая попытка"
+              title="Неумелая попытка"
+              value={-2}
+              onClick={handleAddValue}
+            />
           </ButtonGroup>
         </Container>
       </Card.Header>

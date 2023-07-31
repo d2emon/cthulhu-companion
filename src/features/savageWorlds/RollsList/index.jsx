@@ -1,8 +1,8 @@
 import { useCallback, useState } from 'react';
-import { Button, Card, Col, Container, Row } from 'react-bootstrap';
+import { Button, ButtonGroup, Card, Col, Container, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  addRollResult, deleteRollResult, selectDiceId, selectRolls, selectWithAces, updateRollResult,
+  addRollResult, deleteRollResult, selectDiceId, selectRolls, selectWithAces, setUntrainedRoll, updateRollResult,
 } from '../rollSlice';
 import RollResultModal from '../modals/RollResultModal';
 import RollModal from '../modals/RollModal';
@@ -26,6 +26,16 @@ function RollList () {
       setShowRoll(true);
     },
     [],
+  );
+
+  const handleShowUntrainedRoll = useCallback(
+    () => {
+      dispatch(setUntrainedRoll());
+      setShowRoll(true);
+    },
+    [
+      dispatch,
+    ],
   );
 
   const handleHideRoll = useCallback(
@@ -107,13 +117,47 @@ function RollList () {
       />
 
       <Card.Header>
-        <Button
-          data-testid="add-roll-button"
-          variant="primary"
-          onClick={handleShowRoll}
-        >
-          Бросить
-        </Button>
+        <ButtonGroup>
+          <Button
+            data-testid="add-roll-button"
+            variant="primary"
+            onClick={handleShowRoll}
+          >
+            Бросить
+          </Button>
+
+          <Button
+            data-testid="add-untrained-roll-button"
+            variant="primary"
+            onClick={handleShowUntrainedRoll}
+          >
+            Неумелый бросок
+          </Button>
+
+          <Button
+            data-testid="add-untrained-roll-button"
+            variant="primary"
+            onClick={handleShowUntrainedRoll}
+          >
+            Встречная проверка
+          </Button>
+
+          <Button
+            data-testid="add-untrained-roll-button"
+            variant="primary"
+            onClick={handleShowUntrainedRoll}
+          >
+            Совместная проверка
+          </Button>
+
+          <Button
+            data-testid="add-untrained-roll-button"
+            variant="primary"
+            onClick={handleShowUntrainedRoll}
+          >
+            Групповая проверка
+          </Button>
+        </ButtonGroup>
       </Card.Header>
 
       <Card.Body>

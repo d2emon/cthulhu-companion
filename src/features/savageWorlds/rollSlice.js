@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { fetchDice, fetchDiceList, fetchRollData, fetchRolls } from './api/diceAPI';
+import { createId } from './api/APIhelper';
 
 const initialState = {
   dice: null,
@@ -254,6 +255,17 @@ export const rollSlice = createSlice({
       ...state,
       withAces: action.payload,
     }),
+    setUntrainedRoll: (state) => ({
+      ...state,
+      diceId: 'd4',
+      modifiers: [
+        {
+          id: createId(),
+          title: 'Неумелая попытка',
+          value: -2,
+        },
+      ],
+    }),
   },
   extraReducers: (builder) => {
     builder
@@ -299,6 +311,7 @@ export const {
   setModifiers,
   setRolls,
   setWithAces,
+  setUntrainedRoll,
 } = rollSlice.actions;
   
 export const selectDices = (state) => state.roll.dices;
