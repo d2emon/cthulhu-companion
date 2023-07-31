@@ -3,47 +3,10 @@ import { Button, Card, Col, Container, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   addRollResult, deleteRollResult, selectDiceId, selectRolls, selectWithAces, updateRollResult,
-} from './rollSlice';
-import RollResultModal from './modals/RollResultModal';
-import RollModal from './modals/RollModal';
-import RollBadges from './RollBadges';
-
-function RollCard ({
-  roll,
-  onClick,
-}) {
-  const handleRollClick = useCallback(
-    () => {
-      if (onClick) {
-        onClick(roll.id);
-      }
-    },
-    [
-      roll,
-      onClick,
-    ],
-  );
-
-  return (
-    <Card className="my-2">
-      <Card.Header>
-        <Card.Title>
-          {roll.total}
-        </Card.Title>
-        <RollBadges
-          raises={roll.raises}
-          success={roll.success}
-        />
-      </Card.Header>
-
-      <Card.Body>
-        <Button onClick={handleRollClick}>
-          Подробнее
-        </Button>
-      </Card.Body>
-    </Card>
-  );
-}
+} from '../rollSlice';
+import RollResultModal from '../modals/RollResultModal';
+import RollModal from '../modals/RollModal';
+import RollCard from './RollCard';
 
 function RollList () {
   const dispatch = useDispatch();
@@ -151,7 +114,9 @@ function RollList () {
       </Card.Header>
 
       <Card.Body>
-        <Container>
+        <Container
+          data-testid="roll-results"
+        >
           <Row>
             { rollsData && rollsData.map((roll) => (
               <Col

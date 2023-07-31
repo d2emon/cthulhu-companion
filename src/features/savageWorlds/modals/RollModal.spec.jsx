@@ -20,7 +20,7 @@ const initialState = {
   withAces: true,          
 };
 
-const mockStore = configureStore({
+const store = configureStore({
   preloadedState: {
     roll: initialState,
   },
@@ -44,7 +44,7 @@ describe('RollModal', () => {
 
   it('shows modal', async () => {
     render(
-      <Provider store={mockStore}>
+      <Provider store={store}>
         <RollModal
           show={true}
         />
@@ -60,7 +60,7 @@ describe('RollModal', () => {
     const onHide = jest.fn();
 
     render(
-      <Provider store={mockStore}>
+      <Provider store={store}>
         <RollModal
           show={true}
           onHide={onHide}
@@ -80,7 +80,7 @@ describe('RollModal', () => {
     const onHide = jest.fn();
 
     render(
-      <Provider store={mockStore}>
+      <Provider store={store}>
         <RollModal
           show={true}
           onHide={onHide}
@@ -119,7 +119,7 @@ describe('RollModal', () => {
 
   it('throws no error on hide with no onHide', async () => {
     render(
-      <Provider store={mockStore}>
+      <Provider store={store}>
         <RollModal
           show={true}
         />
@@ -138,7 +138,7 @@ describe('RollModal', () => {
 
   it('throws no error on roll with no onHide', async () => {
     render(
-      <Provider store={mockStore}>
+      <Provider store={store}>
         <RollModal
           show={true}
         />
