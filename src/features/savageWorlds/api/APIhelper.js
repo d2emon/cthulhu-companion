@@ -4,8 +4,10 @@ const timeoutDecorator = (fn) => new Promise((resolve, reject) => setTimeout(
 ));
   
 export const mockRequest = (fn) => (req = {}) => timeoutDecorator((resolve) => {
+  let requestId;
   try {
-    console.log('REQ:', req);
+    requestId = createId();
+    console.log('REQ:', requestId, req);
   
     const {
       query = {},
@@ -21,14 +23,14 @@ export const mockRequest = (fn) => (req = {}) => timeoutDecorator((resolve) => {
       data: result,
       error: null,
     };
-    console.log('RES:', res);
+    console.log('RES:', requestId, res);
     return resolve(res);
   } catch (e) {
     const res = {
       data: null,
       error: e.message,
     };
-    console.error('ERR:', res);
+    console.error('ERR:', requestId, res);
     return resolve(res);
   }
 });
