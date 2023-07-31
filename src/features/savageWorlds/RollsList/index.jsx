@@ -51,13 +51,14 @@ function RollList () {
   );
 
   const handleAddRoll = useCallback(
-    (id) => {
+    (id, isWild=false) => {
       dispatch(addRollResult({
         id,
         options: {
           diceId,
           withAces,
         },
+        isWild,
       }));
     },
     [
@@ -68,20 +69,22 @@ function RollList () {
   );
 
   const handleChangeRoll = useCallback(
-    (id, value) => {
+    (id, value, isWild) => {
       dispatch(updateRollResult({
         id,
         value,
+        isWild,
       }));
     },
     [dispatch],
   );
 
   const handleDeleteRoll = useCallback(
-    (id, value) => {
+    (id, value, isWild) => {
       dispatch(deleteRollResult({
         id,
         value,
+        isWild,
       }));
     },
     [dispatch],

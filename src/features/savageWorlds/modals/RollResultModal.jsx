@@ -1,4 +1,4 @@
-import { Button, Card, Container, Modal } from 'react-bootstrap';
+import { Button, Card, Modal } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import { selectRolls } from '../rollSlice';
 import RollResult from '../RollResult';
@@ -24,10 +24,70 @@ function RollResultModal ({
     ]
   );
 
-  const handleAddValue = useCallback(
+  const mainRolls = useMemo(
+    () => (
+      roll
+        ? roll.rolls
+        : null
+    ),
+    [roll],
+  );
+
+  const wildRolls = useMemo(
+    () => (
+      roll
+        ? roll.wildRolls
+        : null
+    ),
+    [roll],
+  );
+
+  const rollDetails = useMemo(
+    () => (
+      roll
+        ? (
+          roll.wildIsBetter
+            ? roll.wildRolls
+            : roll.rolls
+        )
+        : null
+    ),
+    [roll],
+  );
+
+  const modifierText = useMemo(
+    () => roll && roll.modifiers && roll.modifiers.reduce(
+      (result, modifier) => {
+        const { value } = modifier;
+        if (value > 0) {
+          return `${result} + ${value}`;
+        }
+        if (value < 0) {
+          return `${result} - ${Math.abs(value)}`;
+        }
+        return result;
+      },
+      '',
+    ),
+    [roll],
+  );
+
+  const handleAddMainValue = useCallback(
     () => {
       if (onAddRoll) {
-        onAddRoll(rollId);
+        onAddRoll(rollId, false);
+      }
+    },
+    [
+      rollId,
+      onAddRoll,
+    ],
+  );
+
+  const handleAddWildValue = useCallback(
+    () => {
+      if (onAddRoll) {
+        onAddRoll(rollId, true);
       }
     },
     [
@@ -41,53 +101,70 @@ function RollResultModal ({
       show={show}
       onHide={onHide}
     >
-      { (roll && roll.dice)
+      { (mainRolls && mainRolls.dice)
         ? (
           <>
             <Modal.Header>
-              { roll.dice && <Modal.Title>{roll.dice.title} <DiceIcon diceId={roll.dice.id} /></Modal.Title> }
+              { mainRolls.dice && <Modal.Title>{mainRolls.dice.title} <DiceIcon diceId={mainRolls.dice.id} /></Modal.Title> }
             </Modal.Header>
 
             <Modal.Body>
-              <Container className="my-2">
-                <Button onClick={handleAddValue}>
-                  Добавить
-                </Button>
-              </Container>
-
-              { roll && (
+              { mainRolls && (
                 <RollResult
                   id={roll.id}
-                  dice={roll.dice.title}
-                  raises={roll.raises}
-                  rolls={roll.result}
-                  max={roll.dice.value}
-                  modifiers={roll.modifiers}
-                  success={roll.success}
-                  onAddRoll={onAddRoll}
+                  title="Основной Кубик"
+                  dice={mainRolls.dice}
+                  rolls={mainRolls.rolls}
+                  max={mainRolls.dice.value}
+                  onAddRoll={handleAddMainValue}
                   onChangeRoll={onChangeRoll}
                   onDeleteRoll={onDeleteRoll}
                 />
               ) }
 
-              <Card className="my-2">
-                <Card.Header>
-                  <Card.Title>Результат</Card.Title>
-                </Card.Header>
+              { wildRolls && wildRolls.dice && (
+                <RollResult
+                  id={roll.id}
+                  title="Дикий Кубик"
+                  dice={wildRolls.dice}
+                  rolls={wildRolls.rolls}
+                  isWild
+                  max={wildRolls.dice.value}
+                  onAddRoll={handleAddWildValue}
+                  onChangeRoll={onChangeRoll}
+                  onDeleteRoll={onDeleteRoll}
+                />
+              ) }
 
-                <Card.Body>
-                  {roll.total}
-                  <RollBadges
-                    raises={roll.raises}
-                    success={roll.success}
-                  />
-                </Card.Body>
-              </Card>
+              {rollDetails && (
+                <Card className="my-2">
+                  <Card.Header>
+                    <Card.Title>Результат</Card.Title>
+                    <Card.Subtitle>{rollDetails.total}</Card.Subtitle>
+                  </Card.Header>
+
+                  <Card.Body>
+                    <Card.Text>
+                      {modifierText}
+                    </Card.Text>
+                  </Card.Body>
+
+                  <Card.Footer>
+                    {rollDetails.modified}
+                    <RollBadges
+                      raises={rollDetails.raises}
+                      success={rollDetails.success}
+                    />
+                  </Card.Footer>
+                </Card>
+              )}
             </Modal.Body>
           </>
         )
         : (
-          <div>Неизвестен</div>
+          <Modal.Header>
+            <Modal.Title>Неизвестен</Modal.Title>
+          </Modal.Header>
         )
       }
 

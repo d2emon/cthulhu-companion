@@ -2,42 +2,70 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { fetchDice, fetchDiceList, fetchRollData, fetchRolls } from './api/diceAPI';
 
 const initialState = {
+  dice: null,
   diceId: 'd4',
   dices: [],
   difficulty: 4,
   modifiers: [],
   rolls: [],
+  wildDice: null,
+  wildDiceId: 'd6',
   withAces: true,
 };
 
-const updateRollBlock = (rolls, id, updater) => {
+const updateRollBlock = (rolls, id, updater, isWild) => {
+  const recalculateBlock = (block, modifier, difficulty) => {
+    const total = block.rolls.reduce((total, roll) => (total + roll.value), 0);
+    const success = total >= difficulty;
+    const raises = success ? Math.floor((total - difficulty) / 4) : 0;
+
+    return {
+      ...block,
+      raises,
+      success,
+      total,
+      modified: total + modifier,
+    };
+  };
+  
   const recalculate = (roll) => {
     const {
       difficulty,
       modifiers,
-      result,
+      rolls,
+      wildRolls,
     } = roll;
   
     const modifier = modifiers
       ? modifiers.reduce((total, modifier) => (total + modifier.value), 0)
       : 0;
-    const total = result.reduce((total, roll) => (total + roll.value), modifier);
-    const success = total >= difficulty;
-    const raises = success ? Math.floor((total - difficulty) / 4) : 0;
+
+    const calculatedRolls = recalculateBlock(rolls, modifier, difficulty);
+    const calculatedWildRolls = recalculateBlock(wildRolls, modifier, difficulty);
+    const wildIsBetter = calculatedWildRolls.total > calculatedRolls.total;
 
     return {
       ...roll,
-      raises,
-      success,
-      total,
+      rolls: calculatedRolls,
+      wildRolls: calculatedWildRolls,
+      wildIsBetter,
     };
   };
   
+  const blockId = isWild ? 'wildRolls' : 'rolls';
+  const toUpdate = (roll) => ({
+    ...roll,
+    [blockId]: {
+      ...roll[blockId],
+      rolls: updater(roll[blockId].rolls)
+    },
+  });
+
   return rolls.map((roll) => (
     (roll.id === id)
       ? recalculate({
           ...roll,
-          result: updater(roll),
+          ...toUpdate(roll),
         })
       : roll
   ));
@@ -51,6 +79,29 @@ export const setDice = createAsyncThunk(
         diceId,
       },
     });
+    return {
+      diceId,
+      dice: result.data,
+    };    
+  },
+);
+
+export const setWildDice = createAsyncThunk(
+  'roll/setWildDice',
+  async (diceId) => {
+    if (!diceId) {
+      return {
+        diceId: '',
+        dice: null,
+      };      
+    }
+
+    const result = await fetchDice({
+      query: {
+        diceId,
+      },
+    });
+
     return {
       diceId,
       dice: result.data,
@@ -86,6 +137,7 @@ export const doRoll = createAsyncThunk(
     const {
       diceId,
       rolls,
+      wildDiceId,
     } = thunkAPI.getState().roll;
 
     const result = await fetchRollData({
@@ -95,6 +147,7 @@ export const doRoll = createAsyncThunk(
       data: {
         difficulty,
         modifiers,
+        wildDiceId,
         withAces,
       }
     });
@@ -111,10 +164,14 @@ export const addRollResult = createAsyncThunk(
     const {
       id,
       options,
+      isWild,
     } = payload;
     
     const result = await fetchRolls({
-      query: options,
+      query: {
+        ...options,
+        withAces: false,
+      }
     });
 
     const {
@@ -125,9 +182,10 @@ export const addRollResult = createAsyncThunk(
       rolls,
       id,
       (roll) => ([
-        ...roll.result,
+        ...roll,
         ...result.data,
       ]),
+      isWild,
     );
   },
 );
@@ -138,6 +196,7 @@ export const deleteRollResult = createAsyncThunk(
     const {
       id,
       value,
+      isWild,
     } = payload;
     
     const {
@@ -147,7 +206,8 @@ export const deleteRollResult = createAsyncThunk(
     return updateRollBlock(
       rolls,
       id,
-      roll => roll.result.filter((item) => (item.id !== value)),
+      roll => roll.filter((item) => (item.id !== value)),
+      isWild,
     );
   },
 );
@@ -158,6 +218,7 @@ export const updateRollResult = createAsyncThunk(
     const {
       id,
       value,
+      isWild,
     } = payload;
     
     const {
@@ -167,7 +228,8 @@ export const updateRollResult = createAsyncThunk(
     return updateRollBlock(
       rolls,
       id,
-      roll => roll.result.map((result) => ((result.id === value.id) ? value : result)),
+      roll => roll.map((result) => ((result.id === value.id) ? value : result)),
+      isWild,
     );
   },
 );
@@ -208,6 +270,11 @@ export const rollSlice = createSlice({
         diceId: action.payload.diceId,
         dice: action.payload.dice,
       }))
+      .addCase(setWildDice.fulfilled, (state, action) => ({
+        ...state,
+        wildDiceId: action.payload.diceId,
+        wildDice: action.payload.dice,
+      }))
       .addCase(addRollResult.fulfilled, (state, action) => ({
         ...state,
         rolls: action.payload,
@@ -239,6 +306,7 @@ export const selectDiceId = (state) => state.roll.diceId;
 export const selectDifficulty = (state) => state.roll.difficulty;
 export const selectModifiers = (state) => state.roll.modifiers;
 export const selectRolls = (state) => state.roll.rolls;
+export const selectWildDiceId = (state) => state.roll.wildDiceId;
 export const selectWithAces = (state) => state.roll.withAces;
 
 export default rollSlice.reducer;

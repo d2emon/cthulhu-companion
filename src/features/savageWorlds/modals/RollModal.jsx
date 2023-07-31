@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import Roll from '../Roll';
 import { useDispatch, useSelector } from 'react-redux';
-import { doRoll, selectDiceId, selectDifficulty, selectModifiers, selectWithAces } from '../rollSlice';
+import { doRoll, selectDiceId, selectDifficulty, selectModifiers, selectWildDiceId, selectWithAces } from '../rollSlice';
 
 function RollModal ({
   show,
@@ -13,6 +13,7 @@ function RollModal ({
   const diceId = useSelector(selectDiceId);
   const difficulty = useSelector(selectDifficulty);
   const modifiers = useSelector(selectModifiers);
+  const wildDiceId = useSelector(selectWildDiceId);
   const withAces = useSelector(selectWithAces);
 
   const addRoll = useCallback(
@@ -21,6 +22,7 @@ function RollModal ({
         diceId,
         difficulty,
         modifiers,
+        wildDiceId,
         withAces,  
       }));
       if (onHide) {
@@ -32,6 +34,7 @@ function RollModal ({
       diceId,
       difficulty,
       modifiers,
+      wildDiceId,
       withAces,
       onHide,
     ],

@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { Button, Card } from 'react-bootstrap';
 import RollBadges from '../RollBadges';
 
@@ -6,6 +6,15 @@ function RollCard ({
   roll,
   onClick,
 }) {
+  const rollDetails = useMemo(
+    () => (
+      (roll.wildIsBetter)
+        ? roll.wildRolls
+        : roll.rolls
+    ),
+    [roll],
+  );
+
   const handleRollClick = useCallback(
     () => {
       if (onClick) {
@@ -27,11 +36,11 @@ function RollCard ({
         <Card.Title
           data-testid="roll-total"
         >
-          {roll.total}
+          {rollDetails.modified}
         </Card.Title>
         <RollBadges
-          raises={roll.raises}
-          success={roll.success}
+          raises={rollDetails.raises}
+          success={rollDetails.success}
         />
       </Card.Header>
 

@@ -8,8 +8,8 @@ import ModifiersModal from './modals/ModifiersModal';
 import DiceIcon from './DiceIcon';
 import {
   loadDiceList,
-  selectDiceId, selectDices, selectDifficulty, selectModifiers, selectWithAces, setDice, setDifficulty,
-  setModifiers, setWithAces,
+  selectDiceId, selectDices, selectDifficulty, selectModifiers, selectWildDiceId, selectWithAces, setDice, setDifficulty,
+  setModifiers, setWildDice, setWithAces,
 } from './rollSlice';
 
 function ModifierList ({
@@ -105,11 +105,21 @@ function Roll () {
   const diceId = useSelector(selectDiceId);
   const difficulty = useSelector(selectDifficulty);
   const modifiers = useSelector(selectModifiers);
+  const wildDiceId = useSelector(selectWildDiceId);
   const withAces = useSelector(selectWithAces);
 
   const handleSaveDice = useCallback(
     (value) => {
       dispatch(setDice(value));
+    },
+    [
+      dispatch,
+    ],
+  );
+
+  const handleSaveWildDice = useCallback(
+    (value) => {
+      dispatch(setWildDice(value));
     },
     [
       dispatch,
@@ -161,6 +171,20 @@ function Roll () {
             dices={dices}
             value={diceId}
             onChange={handleSaveDice}
+          />
+        </Form.Group>
+
+        <Form.Group>
+          <Form.Label>
+            Дикий кубик
+            {' '}
+            { wildDiceId && <DiceIcon diceId={wildDiceId} /> }
+          </Form.Label>
+          <DiceField
+            allowNoDice
+            dices={dices}
+            value={wildDiceId}
+            onChange={handleSaveWildDice}
           />
         </Form.Group>
 

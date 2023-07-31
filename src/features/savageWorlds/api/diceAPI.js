@@ -8,6 +8,13 @@ const DEFAULT_OPTIONS = {
   withAces: false,
 };
 
+const findDice = (diceId) => {
+  if (!diceId) {
+    return null;
+  }
+  return dices.find(({ id }) => (id === diceId)) || null
+}
+
 const rollDice = (dice) => () => {
   const id = createId();
   const value = Math.floor(Math.random() * dice.value) + 1;
@@ -42,14 +49,17 @@ const withDice = fn => withOptions((args) => {
   const {
     options: {
       diceId,
+      wildDiceId,
     },
   } = args;
 
-  const dice = dices.find(({ id }) => (id === diceId)) || null;
+  const dice = findDice(diceId);
+  const wildDice = findDice(wildDiceId);
 
   return fn({
     ...args,
     dice,
+    wildDice,
   });  
 });
 
@@ -59,16 +69,17 @@ const withRolls = fn => withDice((args) => {
       withAces,
     },
     dice,
+    wildDice,
   } = args;
 
-  const getRolls = () => {
+  const getRolls = (current) => {
     const result = [];
     
-    if (!dice) {
+    if (!current) {
       return result;
     }
 
-    const roller = rollDice(dice);
+    const roller = rollDice(current);
     let reroll = true;
     while (reroll) {
       const roll = roller();
@@ -79,9 +90,18 @@ const withRolls = fn => withDice((args) => {
     return result;  
   };
 
+  const rolls = getRolls(dice);
+  const totalRoll = rolls.reduce((total, roll) => (total + roll.value), 0);
+
+  const wildRolls = getRolls(wildDice);
+  const totalWildRoll = wildRolls.reduce((total, roll) => (total + roll.value), 0);
+
   return fn({
     ...args,
-    result: getRolls(),
+    rolls,
+    wildRolls,
+    totalRoll,
+    totalWildRoll,
   });  
 });
 
@@ -92,26 +112,44 @@ const setRollData = withRolls(({
     withAces,
   },
   dice,
-  result,
+  wildDice,
+  rolls,
+  totalRoll,
+  wildRolls,
+  totalWildRoll,
 }) => {
   const id = createId();
   const modifier = modifiers
     ? modifiers.reduce((total, modifier) => (total + modifier.value), 0)
     : 0;
-  const total = result.reduce((total, roll) => (total + roll.value), modifier);
-  const success = total >= difficulty;
-  const raises = success ? Math.floor((total - difficulty) / 4) : 0;
+
+  const calculateRoll = (rollDice, data, total) => {
+    const modified = total + modifier;
+    const success = modified >= difficulty;
+    const raises = success ? Math.floor((modified - difficulty) / 4) : 0;
+  
+    return {
+      dice: rollDice,
+      modified,
+      raises,
+      rolls: data,
+      success,
+      total,
+    };
+  }
+
+  const calculatedRolls = calculateRoll(dice, rolls, totalRoll);
+  const calculatedWildRolls = calculateRoll(wildDice, wildRolls, totalWildRoll);
+  const wildIsBetter = calculatedWildRolls.total > calculatedRolls.total;
   
   return {
     id,
-    dice,
     difficulty,
     modifiers,
-    raises,
-    result,
-    total,
-    success,
     withAces,
+    rolls: calculatedRolls,
+    wildRolls: calculatedWildRolls,
+    wildIsBetter,
   };
 });
 
@@ -127,7 +165,7 @@ export const fetchDice = mockRequest(
 
 export const fetchRolls = mockRequest(
   withRolls(
-    ({ result }) => result,
+    ({ rolls }) => rolls,
   ),
 );
 

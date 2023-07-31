@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { Form } from 'react-bootstrap';
 
 function DiceField ({
+  allowNoDice,
   dices,
   value,
   onChange,
@@ -21,6 +22,13 @@ function DiceField ({
       value={value}
       onChange={handleChangeDice}
     >
+      { allowNoDice && (
+        <option
+          value={''}
+        >
+          Нет
+        </option>
+      ) }
       { dices && dices.map((item) => (
         <option
           key={item.id}
