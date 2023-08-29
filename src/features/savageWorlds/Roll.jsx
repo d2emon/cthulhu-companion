@@ -8,7 +8,7 @@ import ModifiersModal from './modals/ModifiersModal';
 import DiceIcon from './DiceIcon';
 import {
   loadDiceList,
-  selectDiceId, selectDices, selectDifficulty, selectModifiers, selectWildDiceId, selectWithAces, setDice, setDifficulty,
+  selectDiceId, selectDices, selectDifficulty, selectModifiers, selectTitle, selectWildDiceId, selectWithAces, setDice, setDifficulty,
   setModifiers, setWildDice, setWithAces,
 } from './rollSlice';
 
@@ -105,24 +105,33 @@ function Roll () {
   const diceId = useSelector(selectDiceId);
   const difficulty = useSelector(selectDifficulty);
   const modifiers = useSelector(selectModifiers);
+  const title = useSelector(selectTitle);
   const wildDiceId = useSelector(selectWildDiceId);
   const withAces = useSelector(selectWithAces);
 
   const handleSaveDice = useCallback(
     (value) => {
-      dispatch(setDice(value));
+      dispatch(setDice({
+        diceId: value,
+        title,
+      }));
     },
     [
       dispatch,
+      title,
     ],
   );
 
   const handleSaveWildDice = useCallback(
     (value) => {
-      dispatch(setWildDice(value));
+      dispatch(setWildDice({
+        diceId: value,
+        title,
+      }));
     },
     [
       dispatch,
+      title,
     ],
   );
 

@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import Roll from '../Roll';
 import { useDispatch, useSelector } from 'react-redux';
-import { doRoll, selectDiceId, selectDifficulty, selectModifiers, selectWildDiceId, selectWithAces } from '../rollSlice';
+import { doRoll, selectDiceId, selectDifficulty, selectModifiers, selectTitle, selectWildDiceId, selectWithAces } from '../rollSlice';
 
 function RollModal ({
   show,
@@ -13,6 +13,7 @@ function RollModal ({
   const diceId = useSelector(selectDiceId);
   const difficulty = useSelector(selectDifficulty);
   const modifiers = useSelector(selectModifiers);
+  const title = useSelector(selectTitle);
   const wildDiceId = useSelector(selectWildDiceId);
   const withAces = useSelector(selectWithAces);
 
@@ -48,7 +49,7 @@ function RollModal ({
     >
       <Modal.Header>
         <Modal.Title data-testid="modal-title">
-          Бросок
+          {title}
         </Modal.Title>
       </Modal.Header>
 

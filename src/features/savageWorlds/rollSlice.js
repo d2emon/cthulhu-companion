@@ -9,6 +9,7 @@ const initialState = {
   difficulty: 4,
   modifiers: [],
   rolls: [],
+  title: 'Бросок',
   wildDice: null,
   wildDiceId: 'd6',
   withAces: true,
@@ -74,10 +75,14 @@ const updateRollBlock = (rolls, id, updater, isWild) => {
 
 export const setDice = createAsyncThunk(
   'roll/setDice',
-  async (diceId) => {
+  async ({
+    diceId,
+    title,
+  }) => {
     const result = await fetchDice({
       query: {
         diceId,
+        title,
       },
     });
     return {
@@ -89,7 +94,10 @@ export const setDice = createAsyncThunk(
 
 export const setWildDice = createAsyncThunk(
   'roll/setWildDice',
-  async (diceId) => {
+  async ({
+    diceId,
+    title,
+  }) => {
     if (!diceId) {
       return {
         diceId: '',
@@ -100,6 +108,7 @@ export const setWildDice = createAsyncThunk(
     const result = await fetchDice({
       query: {
         diceId,
+        title,
       },
     });
 
@@ -138,6 +147,7 @@ export const doRoll = createAsyncThunk(
     const {
       diceId,
       rolls,
+      title,
       wildDiceId,
     } = thunkAPI.getState().roll;
 
@@ -148,6 +158,7 @@ export const doRoll = createAsyncThunk(
       data: {
         difficulty,
         modifiers,
+        title,
         wildDiceId,
         withAces,
       }
@@ -255,9 +266,17 @@ export const rollSlice = createSlice({
       ...state,
       withAces: action.payload,
     }),
+    setDefaultRoll: (state) => ({
+      ...state,
+      diceId: 'd4',
+      difficulty: 4,
+      modifiers: [],
+      title: 'Бросок',
+    }),
     setUntrainedRoll: (state) => ({
       ...state,
       diceId: 'd4',
+      difficulty: 4,
       modifiers: [
         {
           id: createId(),
@@ -265,6 +284,21 @@ export const rollSlice = createSlice({
           value: -2,
         },
       ],
+      title: 'Неумелая попытка',
+    }),
+    setOppositeRollAttack: (state) => ({
+      ...state,
+      diceId: 'd4',
+      difficulty: 4,
+      modifiers: [],
+      title: 'Встречная проверка (Нападающий)',
+    }),
+    setOppositeRollDefence: (state, action) => ({
+      ...state,
+      diceId: 'd4',
+      difficulty: action.payload,
+      modifiers: [],
+      title: 'Встречная проверка (Защищающийся)',
     }),
   },
   extraReducers: (builder) => {
@@ -311,7 +345,10 @@ export const {
   setModifiers,
   setRolls,
   setWithAces,
+  setDefaultRoll,
   setUntrainedRoll,
+  setOppositeRollAttack,
+  setOppositeRollDefence,
 } = rollSlice.actions;
   
 export const selectDices = (state) => state.roll.dices;
@@ -319,6 +356,7 @@ export const selectDiceId = (state) => state.roll.diceId;
 export const selectDifficulty = (state) => state.roll.difficulty;
 export const selectModifiers = (state) => state.roll.modifiers;
 export const selectRolls = (state) => state.roll.rolls;
+export const selectTitle = (state) => state.roll.title;
 export const selectWildDiceId = (state) => state.roll.wildDiceId;
 export const selectWithAces = (state) => state.roll.withAces;
 

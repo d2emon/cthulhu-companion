@@ -50,6 +50,7 @@ const withDice = fn => withOptions((args) => {
     options: {
       diceId,
       wildDiceId,
+      title,
     },
   } = args;
 
@@ -58,6 +59,7 @@ const withDice = fn => withOptions((args) => {
 
   return fn({
     ...args,
+    title,
     dice,
     wildDice,
   });  
@@ -109,6 +111,7 @@ const setRollData = withRolls(({
   options: {
     difficulty,
     modifiers,
+    title,
     withAces,
   },
   dice,
@@ -146,6 +149,7 @@ const setRollData = withRolls(({
     id,
     difficulty,
     modifiers,
+    title,
     withAces,
     rolls: calculatedRolls,
     wildRolls: calculatedWildRolls,

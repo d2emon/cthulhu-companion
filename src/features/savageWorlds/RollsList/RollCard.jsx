@@ -5,6 +5,7 @@ import RollBadges from '../RollBadges';
 function RollCard ({
   roll,
   onClick,
+  onOppositeRollClick,
 }) {
   const rollDetails = useMemo(
     () => (
@@ -27,6 +28,18 @@ function RollCard ({
     ],
   );
 
+  const handleOppositeRollClick = useCallback(
+    () => {
+      if (onOppositeRollClick) {
+        onOppositeRollClick(rollDetails.modified);
+      }
+    },
+    [
+      rollDetails,
+      onOppositeRollClick,
+    ],
+  );
+
   console.log(rollDetails);
   return (
     <Card
@@ -46,12 +59,21 @@ function RollCard ({
       </Card.Header>
 
       <Card.Body>
-        <Button
-          data-testid="roll-detail-button"
-          onClick={handleRollClick}
-        >
-          Подробнее
-        </Button>
+        <div className="d-grid gap-2">
+          <Button
+            data-testid="roll-detail-button"
+            onClick={handleRollClick}
+          >
+            Подробнее
+          </Button>
+
+          <Button
+            data-testid="opposite-roll-button"
+            onClick={handleOppositeRollClick}
+          >
+            Встречный бросок
+          </Button>
+        </div>
       </Card.Body>
     </Card>
   );

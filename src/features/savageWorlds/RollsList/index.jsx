@@ -2,7 +2,8 @@ import { useCallback, useState } from 'react';
 import { Button, ButtonGroup, Card, Col, Container, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  addRollResult, deleteRollResult, selectDiceId, selectRolls, selectWithAces, setUntrainedRoll, updateRollResult,
+  addRollResult, deleteRollResult, selectDiceId, selectRolls, selectTitle, selectWithAces, setDefaultRoll,
+  setOppositeRollAttack, setOppositeRollDefence, setUntrainedRoll, updateRollResult,
 } from '../rollSlice';
 import RollResultModal from '../modals/RollResultModal';
 import RollModal from '../modals/RollModal';
@@ -12,6 +13,7 @@ function RollList () {
   const dispatch = useDispatch();
 
   const diceId = useSelector(selectDiceId);
+  const title = useSelector(selectTitle);
   const withAces = useSelector(selectWithAces);
 
   const [selectedRoll, setSelectedRoll] = useState(null);
@@ -23,14 +25,38 @@ function RollList () {
 
   const handleShowRoll = useCallback(
     () => {
+      dispatch(setDefaultRoll());
       setShowRoll(true);
     },
-    [],
+    [
+      dispatch,
+    ],
   );
 
   const handleShowUntrainedRoll = useCallback(
     () => {
       dispatch(setUntrainedRoll());
+      setShowRoll(true);
+    },
+    [
+      dispatch,
+    ],
+  );
+
+  const handleShowOppositeRollAttacker = useCallback(
+    () => {
+      dispatch(setOppositeRollAttack());
+      setShowRoll(true);
+    },
+    [
+      dispatch,
+    ],
+  );
+
+  const handleShowOppositeRollDefender = useCallback(
+    (targetNumber) => {
+      console.log(targetNumber);
+      dispatch(setOppositeRollDefence(targetNumber));
       setShowRoll(true);
     },
     [
@@ -66,6 +92,7 @@ function RollList () {
         id,
         options: {
           diceId,
+          title,
           withAces,
         },
         isWild,
@@ -74,6 +101,7 @@ function RollList () {
     [
       dispatch,
       diceId,
+      title,
       withAces,
     ],
   );
@@ -137,7 +165,7 @@ function RollList () {
           <Button
             data-testid="add-untrained-roll-button"
             variant="primary"
-            onClick={handleShowUntrainedRoll}
+            onClick={handleShowOppositeRollAttacker}
           >
             Встречная проверка
           </Button>
@@ -173,6 +201,7 @@ function RollList () {
                 <RollCard
                   roll={roll}
                   onClick={handleShowResults}
+                  onOppositeRollClick={handleShowOppositeRollDefender}
                 />
               </Col>
             )) }
