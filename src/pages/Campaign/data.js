@@ -20,12 +20,18 @@ put the brakes on things, then one thing or another led to a delay in starting t
 unanticipated long break means the choice of “Class of 2023” in the name has aged particularly
 poorly.
     `),
+    isLookingForPlayers: true,
+    lastUpdate: new Date(),
+    status: 'Playing',
   },
   {
     id: 'campaign-1',
     background: 'https://db4sgowjqfwig.cloudfront.net/backgrounds/40/assets/383977/gothic_graves_n_woods.jpg?1413840070',
     banner: 'https://db4sgowjqfwig.cloudfront.net/campaigns/113476/banners/513354/HotOE.jpg?1443986861',
     title: 'Horror on the Orient Express - Total Recap!',
+    isLookingForPlayers: true,
+    lastUpdate: new Date(),
+    status: 'Playing',
   },
 ];
 
