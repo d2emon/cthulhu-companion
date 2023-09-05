@@ -1,5 +1,5 @@
 import React from 'react';
-import { Col, Row } from 'react-bootstrap';
+import { Card, Col, Row } from 'react-bootstrap';
 import Campaign from '../../components/Campaign';
 import ToBeDone from '../../components/ToBeDone';
 import { campaign } from '../Campaign/data';
@@ -9,10 +9,14 @@ function Game() {
     <Row>
       <Col>
         <Campaign>
-          <div
-            dangerouslySetInnerHTML={{ __html: campaign.description }}
-          />
+          <Card>
+            <Card.Body
+              dangerouslySetInnerHTML={{ __html: campaign.description }}
+            />
+          </Card>
+
           <hr />
+
           <ToBeDone />
         </Campaign>
       </Col>
