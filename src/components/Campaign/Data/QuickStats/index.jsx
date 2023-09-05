@@ -53,12 +53,14 @@ function QuickStats({
                     </Row>
                 </Container>
 
-                <Container>
+                <Container
+                    className="my-1"
+                >
                     <Row>
                         <Col sm={5}>
                             <Button
                                 className="fans-counter"
-                                variant="link"
+                                variant="primary"
                                 onClick={handleFansClick}
                             >
                                 <dl>
@@ -70,12 +72,14 @@ function QuickStats({
                     </Row>
                 </Container>
 
-                <Container>
+                <Container
+                    className="my-1"
+                >
                     <Row>
                         <Col sm="12">
                             <Button
                                 className="fans-counter"
-                                variant="link"
+                                variant="primary"
                                 onClick={handleCommentsClick}
                             >
                                 <dl>
