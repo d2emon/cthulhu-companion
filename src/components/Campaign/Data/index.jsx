@@ -13,6 +13,7 @@ function Data({
   master,
   players,
   status,
+  stream,
 }) {
   return (
     <Container>
@@ -30,7 +31,9 @@ function Data({
         status={status}
       />
 
-      <Stream />
+      <Stream
+        stream={stream}
+      />
     </Container>
   );
 }

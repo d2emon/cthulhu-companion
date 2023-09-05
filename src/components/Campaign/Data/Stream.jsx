@@ -1,7 +1,10 @@
-import { Card, Col, Row } from 'react-bootstrap';
+import { Card, Col, Image, Row } from 'react-bootstrap';
 import { ImBubble } from 'react-icons/im';
+import { Link } from 'react-router-dom';
 
-function Stream() {
+function Stream({
+  stream,
+}) {
   return (
     <Card>
       <Card.Header>
@@ -15,33 +18,58 @@ function Stream() {
         </Row>
       </Card.Header>
 
-      <Card.Body>
-        <Row>
-          <Col md={4}>
-            <a href="https://www.obsidianportal.com/profile/AndMath">
-              <img alt="AndMath" src="/assets/icons/avatars/player-avatar.png" title="AndMath" />
-            </a>
-          </Col>
-          <Col>
-            <div className="summary">
-              <a href="http://www.obsidianportal.com/profile/AndMath">
-                AndMath
-              </a>
-              {' '}
-              updated the character
-              {' '}
-              <a href="https://horror-on-the-orient-express-6.obsidianportal.com/characters/the-mystery-knight-pierre-decroix">
-                The Mystery Knight (Pierre Decroix)
-              </a>
-            </div>
-            <div className="time">
-              <time className="timeago-reformat" dateTime="2023-06-01T13:44:32Z">
-                13 days ago
-              </time>
-            </div>
-          </Col>
-        </Row>
-      </Card.Body>
+      {
+        stream && stream.length
+        ? (
+          <Card.Body>
+            { stream.map((item) => (
+              <Row
+                key={item.id}
+              >
+                <Col md={4}>
+                  { item.author && (
+                    <Link to={item.author.url}>
+                      <Image
+                        rounded
+                        height="56"
+                        alt={item.author.name}
+                        title={item.author.name}
+                        src={item.author.avatar}
+                      />
+                    </Link>
+                  ) }  
+                </Col>
+                <Col>
+                  <div className="summary">
+                    <a href="http://www.obsidianportal.com/profile/AndMath">
+                      AndMath
+                    </a>
+                    {' '}
+                    updated the character
+                    {' '}
+                    <a href="https://horror-on-the-orient-express-6.obsidianportal.com/characters/the-mystery-knight-pierre-decroix">
+                        The Mystery Knight (Pierre Decroix)
+                    </a>
+                  </div>
+
+                  <div className="time">
+                    <time className="timeago-reformat" dateTime="2023-06-01T13:44:32Z">
+                      13 days ago
+                    </time>
+                  </div>
+                </Col>
+              </Row>
+            )) }
+          </Card.Body>
+        )
+        : (
+          <Card.Body>
+            <Card.Title>
+              Здесь пока пусто
+            </Card.Title>
+          </Card.Body>  
+        )
+      }
 
             <ul className="recent-updates divided-list">
               <li className="character update-container">

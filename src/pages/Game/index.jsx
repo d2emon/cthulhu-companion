@@ -136,6 +136,32 @@ const gameSystem = {
   logo: 'https://db4sgowjqfwig.cloudfront.net/game_systems/9/assets/1039522/call-of-cthulhu.png?1579813969',
   url: '/campaigns?game_system_id=9',
 }
+const stream = [
+  {
+    id: '1',
+    author: {
+      id: 'cbermar',
+      name: 'cbermar',
+      url: '/profile/cbermar',
+      avatar: 'https://horror-on-the-orient-express-6.obsidianportal.com/assets/icons/avatars/player-avatar.png',
+    },
+  },
+  {
+    id: '2',
+    author: {
+      id: 'cbermar',
+      name: 'cbermar',
+      url: '/profile/cbermar',
+      avatar: '//db4sgowjqfwig.cloudfront.net/images/776191/98256_avatar_square_thumb',    
+    },
+  },
+  {
+    id: 'cbermar',
+    name: 'cbermar',
+    url: '/profile/cbermar',
+    avatar: '//db4sgowjqfwig.cloudfront.net/images/776191/98256_avatar_square_thumb',  
+  },
+];
 
 function Game() {
   return (
@@ -163,6 +189,7 @@ function Game() {
           master={master}
           players={players}
           status={campaign.status}
+          stream={stream}
         />
       </Col>
     </Row>
