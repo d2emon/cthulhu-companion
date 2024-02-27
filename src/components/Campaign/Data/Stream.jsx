@@ -1,3 +1,4 @@
+import React from 'react';
 import { Card, Col, Image, Row } from 'react-bootstrap';
 import { ImBubble } from 'react-icons/im';
 import { Link } from 'react-router-dom';

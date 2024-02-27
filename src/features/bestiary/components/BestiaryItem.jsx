@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { Col, ListGroup, Row } from 'react-bootstrap';
 import { BsStar, BsStarFill } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
