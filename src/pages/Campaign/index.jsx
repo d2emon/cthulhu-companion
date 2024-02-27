@@ -1,11 +1,24 @@
 import React from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
+import {
+    Col,
+    Container,
+    Row,
+} from 'react-bootstrap';
 import { Outlet } from 'react-router';
+
+// Components
 import MainBar from '../../components/MainBar';
 import Campaign from '../../components/Campaign';
-import { campaign } from './data';
 
+// Containers
+
+// Data
+import campaigns from '../../data/campaigns';
+
+// Styles
 import './Campaign.css';
+
+const campaign = campaigns[0];
 
 function Game() {
   return (

@@ -2,7 +2,11 @@ import React from 'react';
 import { Card, Col, Row } from 'react-bootstrap';
 import Campaign from '../../components/Campaign';
 import ToBeDone from '../../components/ToBeDone';
-import { campaign } from '../Campaign/data';
+
+// Data
+import campaigns from '../../data/campaigns';
+
+const campaign = campaigns[0];
 
 const master = {
   id: 'Caligula_1',

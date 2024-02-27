@@ -5,7 +5,6 @@ import { RouterProvider } from 'react-router-dom';
 import reportWebVitals from './reportWebVitals';
 
 import router from './app/router';
-// import store from './store';
 import { store } from './app/store';
 
 // Styles
