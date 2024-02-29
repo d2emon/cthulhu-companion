@@ -1,57 +1,34 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Card, Col, Container, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import CharacterFilters from '../../components/CharacterFilters';
 import CharacterMaster from '../../components/CharacterMaster';
-
-const characterGroups = [
-  {
-    id: 'pc',
-    title: 'Player Characters',
-  },
-  {
-    id: 'npc',
-    title: 'Non-Player Characters',
-  },
-];
-
-const characterTags = [
-  {
-    id: 'tag-1',
-    title: 'Tag 1',
-  },
-  {
-    id: 'tag-2',
-    title: 'Tag 2',
-  },
-];
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  loadCharacterGroups,
+  loadCharacters,
+  newCharacter,
+} from '../../app/store/character/thunks';
+import {
+  selectCharacterGroups,
+  selectCharacterTags,
+  selectCharacters,
+  selectSelectedCharacterGroups,
+  selectSelectedCharacterTags,
+} from '../../app/store/character/selectors';
+import { setSelectedGroups, setSelectedTags } from '../../app/store/character/slice';
 
 function Characters() {
-  const [groups, setGroups] = useState(['pc', 'npc']);
-  const [tags, setTags] = useState([]);
+  const dispatch = useDispatch();
 
   const [isCharacterMaster, setIsCharacterMaster] = useState(false);
 
-  const [characters, setCharacters] = useState([
-    {
-      id: '1',
-      groupId: 'pc',
-      name: 'Boris Vasilijev',
-      image: 'https://db4sgowjqfwig.cloudfront.net/images/3777054/Boris_Vasilijev_square_thumb.jpeg',
-      description: 'Russian psychiatrist and noble in exile. Pompous and jovial.',
-      url: '/characters/1',
-      tags: ['tag-1'],
-    },
-    {
-      id: '2',
-      groupId: 'npc',
-      name: 'Boris Vasilijev',
-      image: 'https://db4sgowjqfwig.cloudfront.net/images/3777054/Boris_Vasilijev_square_thumb.jpeg',
-      description: 'Russian psychiatrist and noble in exile. Pompous and jovial.',
-      url: '/characters/2',
-      tags: [],
-    },
-  ]);
+  const characters = useSelector(selectCharacters);
+  const characterGroups = useSelector(selectCharacterGroups);
+  const characterTags = useSelector(selectCharacterTags);
+
+  const groups = useSelector(selectSelectedCharacterGroups);
+  const tags = useSelector(selectSelectedCharacterTags);
 
   const filters = useMemo(() => ({
     groups,
@@ -71,14 +48,14 @@ function Characters() {
     tags,
   ]);
 
-  const applyFilters = useCallback((newFilters) => {
-    setTags(newFilters.tags || []);
-    setGroups(newFilters.groups || []);
-  }, []);
-
   const applyTag = useCallback((tagId) => () => {
-    setTags([tagId]);
-  }, []);
+    dispatch(setSelectedTags([tagId]));
+  }, [dispatch]);
+
+  const applyFilters = useCallback((newFilters) => {
+    dispatch(setSelectedTags(newFilters.tags || []));
+    dispatch(setSelectedGroups(newFilters.groups || []));
+  }, [dispatch]);
 
   const addCharacter = useCallback((groupId) => () => {
     const character = {
@@ -91,12 +68,17 @@ function Characters() {
       tags: [],
     };
     setIsCharacterMaster(true);
-    setCharacters([
-      ...characters,
-      character,
-    ]);
+    dispatch(newCharacter(character));
   }, [
+    dispatch,
     characters,
+  ]);
+
+  useEffect(() => {
+    dispatch(loadCharacterGroups);
+    dispatch(loadCharacters);
+  }, [
+    dispatch,
   ]);
 
   if (isCharacterMaster) {
