@@ -7,38 +7,38 @@ import Banner from './Banner';
 import './Header.css';
 
 function Header({
-    banner,
-    title,
+  banner,
+  title,
 }) {
-    return (
-        <Container className="my-4">
-            <Row>
-                <Col
-                    lg={2}
-                    sm={5}
-                >
-                    <Logo />
-                </Col>
+  return (
+    <Container className="my-4">
+      <Row>
+        <Col
+          lg={2}
+          sm={5}
+        >
+          <Logo />
+        </Col>
 
-                <Col
-                    className="campaign-title"
-                >
-                    <h2>{title}</h2>
-                </Col>
-            </Row>
+        <Col
+          className="campaign-title"
+        >
+          <h2>{title}</h2>
+        </Col>
+      </Row>
 
-            <Row>
-                <Container>
-                    <Link to="/">
-                        <Banner
-                            src={banner}
-                            title={title}
-                        />
-                    </Link>
-                </Container>
-            </Row>
+      <Row>
+        <Container>
+          <Link to="/">
+            <Banner
+              src={banner}
+              title={title}
+            />
+            </Link>
         </Container>
-    );
+      </Row>
+    </Container>
+  );
 }
 
 export default Header;

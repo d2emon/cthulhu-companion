@@ -1,7 +1,9 @@
 import React from 'react';
 import Data from './Data';
 import Header from './Header';
+import Loader from './Loader';
 import Nav from './Nav';
+import Description from './Description';
 
 function Campaign({ children }) {
     return (
@@ -103,8 +105,10 @@ function Campaign({ children }) {
     */
 }
 
-Campaign.Header = Header;
-Campaign.Nav = Nav;
 Campaign.CampaignData = Data;
+Campaign.Description = Description;
+Campaign.Header = Header;
+Campaign.Loader = Loader;
+Campaign.Nav = Nav;
 
 export default Campaign;

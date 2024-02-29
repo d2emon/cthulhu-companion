@@ -1,3 +1,7 @@
+import gameSystem from './gameSystem';
+
+const lastUpdate = new Date();
+
 export default {
   id: 'campaign-1',
   background: 'https://db4sgowjqfwig.cloudfront.net/backgrounds/40/assets/383977/gothic_graves_n_woods.jpg?1413840070',
@@ -5,7 +9,10 @@ export default {
   title: 'Horror on the Orient Express - Total Recap!',
   // description: markdown.render(``),
   isLookingForPlayers: true,
-  lastUpdate: new Date(),
+  lastUpdate: lastUpdate.toISOString(),
   status: 'Playing',
+  comments: 4,
+  fans: 24,
+  gameSystem,
 };
   

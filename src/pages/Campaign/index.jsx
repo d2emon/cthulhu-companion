@@ -1,15 +1,8 @@
 import React, { useEffect, useMemo } from 'react';
-import {
-    Col,
-    Container,
-    Row,
-} from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { Outlet } from 'react-router';
 
 // Components
 import MainBar from '../../components/MainBar';
-import Campaign from '../../components/Campaign';
 
 // Containers
 
@@ -17,17 +10,19 @@ import Campaign from '../../components/Campaign';
 import './Campaign.css';
 
 // Selectors
-import { selectCampaign } from '../../app/store/campaign/selectors';
+import {
+  selectCampaign,
+  selectCampaignIsReady,
+} from '../../app/store/campaign/selectors';
 
 // Thunks
-import { loadCampaign } from '../../app/store/campaign/thunks';
-import Loader from './Loader';
-
-const campaignId = 'default-campaign';
+import { loadDefaultCampaign } from '../../app/store/campaign/thunks';
+import CampaignData from './CampaignData';
 
 function Game() {
   const dispatch = useDispatch();
 
+  const isReady = useSelector(selectCampaignIsReady);
   const campaign = useSelector(selectCampaign);
 
   const backgroundImage = useMemo(
@@ -37,9 +32,14 @@ function Game() {
 
   useEffect(
     () => {
-      dispatch(loadCampaign(campaignId));
+      if (!isReady) {
+        dispatch(loadDefaultCampaign);
+      }
     },
-    [dispatch],
+    [
+      dispatch,
+      isReady,
+    ],
   );
 
   return (
@@ -54,27 +54,9 @@ function Game() {
     >
       <MainBar />
 
-      {
-        campaign
-          ? (
-            <Container>
-              <Campaign.Header
-                title={campaign.title}
-                banner={campaign.banner}
-              />
-
-              <Row>
-                <Col sm={2}>
-                    <Campaign.Nav />
-                </Col>
-                <Col>
-                    <Outlet />
-                </Col>
-              </Row>
-            </Container>
-          )
-          : (<Loader />)
-      }
+      <CampaignData
+        campaign={campaign}
+      />
     </div>
   );
 };

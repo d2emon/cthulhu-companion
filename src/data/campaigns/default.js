@@ -1,4 +1,7 @@
 import markdown from '../../helpers/markdown';
+import gameSystem from './gameSystem';
+
+const lastUpdate = new Date();
 
 export default {
   id: 'default-campaign',
@@ -18,6 +21,9 @@ unanticipated long break means the choice of “Class of 2023” in the name has
 poorly.
   `),
   isLookingForPlayers: true,
-  lastUpdate: new Date(),
+  lastUpdate: lastUpdate.toISOString(),
   status: 'Playing',
+  comments: 4,
+  fans: 24,
+  gameSystem,
 };

@@ -2,7 +2,7 @@ import React from 'react';
 import {
     Container,
 } from 'react-bootstrap';
-import ToBeDone from '../../components/ToBeDone';
+import ToBeDone from '../ToBeDone';
 
 function Loader() {
   return (
