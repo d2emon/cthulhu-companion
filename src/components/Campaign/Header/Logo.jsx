@@ -4,7 +4,7 @@ function Logo() {
     return (
         <div
             style={{
-                height: 130,
+                // height: 130,
                 width: 130,
             }}
         >

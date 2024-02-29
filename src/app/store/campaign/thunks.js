@@ -5,6 +5,7 @@ import { fetchCampaign } from '../../../api/campaign';
 
 // Slice
 import { setCampaign, setMaster, setPlayers, setStatus, setStream } from './slice';
+import { loadGameSystem } from '../gameSystem/thunks';
 
 const master = {
   id: 'Caligula_1',
@@ -159,8 +160,8 @@ const stream = [
 
 const defaultCampaignId = 'default-campaign';
 
-export const loadCampaign = (campaignId) => async (dispatch) => {
-  if (!campaignId) {
+export const loadCampaign = (itemId) => async (dispatch) => {
+  if (!itemId) {
     dispatch(setCampaign(null));
     return;
   }
@@ -168,13 +169,16 @@ export const loadCampaign = (campaignId) => async (dispatch) => {
   dispatch(setStatus(campaignStatuses.CAMPAIGN_REQUEST));
 
   try {
-    const campaignResponse = await fetchCampaign(campaignId);
+    const campaignResponse = await fetchCampaign({ itemId });
     const campaign = campaignResponse?.data;
     dispatch(setStatus(campaignStatuses.CAMPAIGN_SUCCESS));
     dispatch(setCampaign(campaign));
     dispatch(setMaster(master));
     dispatch(setPlayers(players));
-    dispatch(setStream(stream));      
+    dispatch(setStream(stream));
+
+    const gameSystemId = campaign?.gameSystem;
+    dispatch(loadGameSystem(gameSystemId));
   } catch (error) {
     dispatch(setStatus(campaignStatuses.CAMPAIGN_ERROR));
     console.error(error);

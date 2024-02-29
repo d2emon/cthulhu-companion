@@ -14,18 +14,19 @@ import Campaign from '../../components/Campaign';
 // Selectors
 import {
   selectCampaign,
-  selectGameSystem,
   selectMaster,
   selectPlayers,
 } from '../../app/store/campaign/selectors';
+import { selectGameSystem } from '../../app/store/gameSystem/selectors';
 
 // Thunks
 
 function Game() {
   const campaign = useSelector(selectCampaign);
-  const gameSystem = useSelector(selectGameSystem);
   const master = useSelector(selectMaster);
   const players = useSelector(selectPlayers);
+  
+  const gameSystem = useSelector(selectGameSystem);
 
   if (!campaign) {
     return <Campaign.Loader />;

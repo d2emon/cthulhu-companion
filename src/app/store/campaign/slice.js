@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import markdown from '../../../helpers/markdown';
 
 const initialState = {
   campaign: null,
@@ -47,7 +48,7 @@ export const campaignSlice = createSlice({
           background,
           banner,
           comments,
-          description,
+          description: markdown.render(description || ''),
           fans,
           isLookingForPlayers,
           lastUpdate,

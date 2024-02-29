@@ -1,14 +1,6 @@
-import markdown from '../../helpers/markdown';
-import gameSystem from './gameSystem';
-
 const lastUpdate = new Date();
 
-export default {
-  id: 'default-campaign',
-  background: '/images/gothic_graves_n_woods.jpg',
-  banner: '/images/Portal-banner2.jpg',
-  title: 'Красная Земля',
-  description: markdown.render(`
+const description = `
 ## Welcome to East Texas University!
 
 The site will recount our groups adventures through the *Degrees of Horror* plot point campaign.
@@ -19,11 +11,18 @@ might experience as a player.
 put the brakes on things, then one thing or another led to a delay in starting this back up.  The
 unanticipated long break means the choice of “Class of 2023” in the name has aged particularly
 poorly.
-  `),
+`;
+
+export default {
+  id: 'default-campaign',
+  background: '/images/gothic_graves_n_woods.jpg',
+  banner: '/images/Portal-banner2.jpg',
+  title: 'Красная Земля',
+  description,
   isLookingForPlayers: true,
   lastUpdate: lastUpdate.toISOString(),
   status: 'Playing',
   comments: 4,
   fans: 24,
-  gameSystem,
+  gameSystem: 'call-of-cthulhu',
 };

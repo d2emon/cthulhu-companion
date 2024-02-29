@@ -1,7 +1,7 @@
-export const mockAPI = (mock) => (query) => {
-  console.log('REQ:', query);
+export const mockAPI = (url, mock) => (query) => {
+  console.log('REQ:', url, query);
   const data = mock(query);
-  console.log('RES:', { data });
+  console.log('RES:', url, { data });
   return new Promise(resolve => setTimeout(() => resolve({ data }), 500));
 }
 

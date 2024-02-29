@@ -1,5 +1,3 @@
-import gameSystem from './gameSystem';
-
 const lastUpdate = new Date();
 
 export default {
@@ -13,6 +11,6 @@ export default {
   status: 'Playing',
   comments: 4,
   fans: 24,
-  gameSystem,
+  gameSystem: 'call-of-cthulhu',
 };
   
