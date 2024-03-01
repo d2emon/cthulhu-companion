@@ -9,5 +9,9 @@ const {
   data,
 });
 
+export const tagAPI = {
+  getItems,
+};
+
 export const fetchCharacterTags = mockAPI('GET /api/character/tags', () => getItems({}));
 // export const fetchCharacterGroup = mockAPI('/api/character/tag/:itemId', ({ itemId }) => getItem(itemId));

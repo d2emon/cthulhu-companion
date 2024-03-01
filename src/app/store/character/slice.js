@@ -6,15 +6,15 @@ const initialState = {
   groupsStatus: null,
 
   tags: [],
-  tagsError: null,
-  tagsStatus: null,
 
+  searchString: '',
   selectedGroups: [],
   selectedTags: [],
 
   character: null,
+  npc: [],
+  pc: [],
 
-  characters: [],
   charactersError: null,
   charactersStatus: null,
 };
@@ -43,30 +43,22 @@ export const characterSlice = createSlice({
       ...state,
       tags: action.payload,
     }),
-    setTagsError: (state, action) => ({
-      ...state,
-      tagsError: action.payload,
-    }),
-    setTagsStatus: (state, action) => ({
-      ...state,
-      tagsStatus: action.payload,
-    }),
 
     // Filters
-    setSelectedGroups: (state, action) => ({
+    setCharacterFilters: (state, action) => ({
       ...state,
-      selectedGroups: action.payload,
-    }),
-    setSelectedTags: (state, action) => ({
-      ...state,
-      selectedTags: action.payload,
+      searchString: action?.payload?.name || '',
+      selectedGroups: action?.payload?.groups || [],
+      selectedTags: action?.payload?.tags || [],
     }),
 
     // Characters
-    setCharacters: (state, action) => ({
-      ...state,
-      characters: action.payload,
-    }),
+    setCharactersByGroup: (state, action) => {
+      const groups = action.payload;
+
+      state.pc = groups?.pc;
+      state.npc = groups?.npc;
+    },
     setCharactersError: (state, action) => ({
       ...state,
       charactersError: action.payload,
@@ -90,15 +82,12 @@ export const {
   setGroupsStatus,
 
   setTags,
-  setTagsError,
-  setTagsStatus,
 
-  setSelectedGroups,
-  setSelectedTags,
+  setCharacterFilters,
 
   setCharacter,
 
-  setCharacters,
+  setCharactersByGroup,
   setCharactersError,
   setCharactersStatus,
 } = characterSlice.actions;

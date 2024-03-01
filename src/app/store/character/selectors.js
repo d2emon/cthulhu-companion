@@ -8,19 +8,19 @@ export const selectCharacterGroupsIsReady = (store) => (
 );
 
 export const selectCharacterTags = store => store.character.tags;
-export const selectCharacterTagsIsReady = (store) => (
-  (store.character.tagsStatus === characterStatuses.CHARACTER_TAGS_REQUEST)
-    || (store.character.tagsStatus === characterStatuses.CHARACTER_TAGS_SUCCESS)
-    || (store.character.tagsStatus === characterStatuses.CHARACTER_TAGS_ERROR)
-);
 
-
-export const selectCharacters = store => store.character.characters;
+export const selectCharactersByGroup = store => ({
+  npc: store.character.npc,
+  pc: store.character.pc,
+});
 export const selectCharactersIsReady = (store) => (
   (store.character.charactersStatus === characterStatuses.CHARACTERS_REQUEST)
     || (store.character.charactersStatus === characterStatuses.CHARACTERS_SUCCESS)
     || (store.character.charactersStatus === characterStatuses.CHARACTERS_ERROR)
 );
 
-export const selectSelectedCharacterGroups = store => store.character.selectedGroups;
-export const selectSelectedCharacterTags = store => store.character.selectedTags;
+export const selectCharacterFilters = store => ({
+  groups: store.character.selectedGroups,
+  name: store.character.searchString,
+  tags: store.character.selectedTags,
+});

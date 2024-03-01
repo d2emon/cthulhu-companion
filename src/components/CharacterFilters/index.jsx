@@ -1,85 +1,77 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { Accordion, Button, Card, Container, Form, InputGroup } from 'react-bootstrap';
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
+import {
+  Accordion,
+  Button,
+  Card,
+  Form,
+  InputGroup,
+} from 'react-bootstrap';
 import { BsTagFill } from 'react-icons/bs';
 import { MdSearch } from 'react-icons/md';
 
-function TagGroup({
-  items,
-  value,
-  onChange,
-}) {
-  const [selectedTags, setSelectedTags] = useState(value);
-  const [selected, setSelected] = useState({});
-    
-  const handleChageTag = useCallback((id) => (e) => {
-    const newData = {
-      ...selected,
-      [id]: e.target.checked,
-    };
-    // setSelected(newData);
-    setSelectedTags(Object.keys(newData).filter(tagId => newData[tagId]));  
-  }, [selected]);
-
-  useEffect(() => {
-    setSelected(items.reduce(
-      (result, item) => ({
-        ...result,
-        [item.id]: value && (value.indexOf(item.id) >= 0),
-      }),
-      {},
-    ));
-  }, [
-    items,
-    value,
-  ]);
-
-  useEffect(() => {
-    if (onChange) {
-      onChange(selectedTags);
-    }
-  }, [
-    selectedTags,
-    onChange,
-  ]);
-
-  return (
-    <Container>
-      { items.map((group) => (
-        <Form.Check
-          key={group.id}
-          id={group.id}
-          name={group.id}
-          label={group.title}
-          checked={!!selected[group.id]}
-          type="checkbox"
-          inline
-          onChange={handleChageTag(group.id)}
-        />
-      )) }
-    </Container>
-  );
-}
+// Components
+import TagGroup from './TagGroup';
 
 function CharacterFilters({
   groups,
   tags,
+  value,
   onFilter,
 }) {
   const [searchString, setSearchString] = useState('');
-  const [selectedGroups, setSelectedGroups] = useState(['pc', 'npc']);
-  const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedGroups, setSelectedGroups] = useState(groups);
+  const [selectedTags, setSelectedTags] = useState(tags);
+
+  const handleFilter = useCallback((data) => {
+    if (onFilter) {
+      onFilter(data);      
+    }
+  }, [
+    onFilter,
+  ]);
 
   const handleChangeSearchString = useCallback((e) => {
     setSearchString(e.target.value);
-  }, []);
+    handleFilter({
+      groups: selectedGroups,
+      name: e.target.value,
+      tags: selectedTags,
+    });
+  }, [
+    handleFilter,
+    selectedGroups,
+    selectedTags,
+  ]);
 
   const handleChangeTag = useCallback((values) => {
     setSelectedTags(values);
-  }, []);
+    handleFilter({
+      groups: selectedGroups,
+      name: searchString,
+      tags: values,
+    });
+  }, [
+    handleFilter,
+    searchString,
+    selectedGroups,
+  ]);
 
   const handleChangeGroup = useCallback((values) => {
     setSelectedGroups(values);
-  }, []);
+    handleFilter({
+      groups: values,
+      name: searchString,
+      tags: selectedTags,
+    });
+  }, [
+    handleFilter,
+    searchString,
+    selectedTags,
+  ]);
 
   const search = useCallback(() => {
     console.log('Search', searchString);
@@ -88,19 +80,9 @@ function CharacterFilters({
   ]);
 
   useEffect(() => {
-    if (onFilter) {
-      onFilter({
-        name: searchString,
-        tags: selectedTags,
-        groups: selectedGroups,
-      });      
-    }
-  }, [
-    searchString,
-    selectedTags,
-    selectedGroups,
-    onFilter,
-  ]);
+    setSelectedGroups(value?.groups || []);
+    setSelectedTags(value?.tags || []);
+  }, [value]);
 
   return (
     <Card className="mb-2">

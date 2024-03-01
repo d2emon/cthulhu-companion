@@ -102,10 +102,20 @@ export const createDb = ({
 
   const addItem = (item) => {
     const items = dbStorage.load();
+
+    const id = item.id || `${items.length + 1}`;
+    const newItem = {
+      id,
+      url: `/characters/${id}`,
+      ...item,
+    };
+
     dbStorage.updateAndSave([
       ...items,
-      item,
+      newItem,
     ]);
+
+    return {...newItem};
   };
 
   return {
