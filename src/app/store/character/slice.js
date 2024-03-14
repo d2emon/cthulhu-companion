@@ -1,14 +1,23 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  groups: [],
-  groupsError: null,
-  groupsStatus: null,
-
+  groups: [
+    {
+      id: 'npc',
+      title: 'Персонажи мастера',
+    },
+    {
+      id: 'pc',
+      title: 'Персонажи игроков',
+    },
+  ],
   tags: [],
 
   searchString: '',
-  selectedGroups: [],
+  selectedGroups: [
+    'npc',
+    'pc',
+  ],
   selectedTags: [],
 
   character: null,
@@ -28,14 +37,6 @@ export const characterSlice = createSlice({
       ...state,
       groups: action.payload,
       selectedGroups: action.payload.map((group) => (group.id)),
-    }),
-    setGroupsError: (state, action) => ({
-      ...state,
-      groupsError: action.payload,
-    }),
-    setGroupsStatus: (state, action) => ({
-      ...state,
-      groupsStatus: action.payload,
     }),
 
     // Tags
@@ -78,8 +79,6 @@ export const characterSlice = createSlice({
 
 export const {
   setGroups,
-  setGroupsError,
-  setGroupsStatus,
 
   setTags,
 

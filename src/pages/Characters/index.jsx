@@ -14,7 +14,6 @@ import {
 
 import CharacterMaster from '../../components/CharacterMaster';
 import {
-  loadCharacterGroups,
   loadCharacters,
   newCharacter,
 } from '../../app/store/character/thunks';
@@ -61,7 +60,6 @@ function Characters() {
   ]);
 
   useEffect(() => {
-    dispatch(loadCharacterGroups);
     dispatch(loadCharacters());
   }, [
     dispatch,

@@ -9,27 +9,9 @@ import {
   setCharactersByGroup,
   setCharactersError,
   setCharactersStatus,
-  setGroups,
-  setGroupsError,
-  setGroupsStatus,
   setTags,
 } from './slice';
 import { fetchCharacters, pushCharacter } from '../../../api/character';
-
-export const loadCharacterGroups = async (dispatch) => {
-  dispatch(setGroupsStatus(characterStatuses.CHARACTER_GROUPS_REQUEST));
-
-  try {
-    const response = await fetchCharacterGroups();
-    dispatch(setGroupsStatus(characterStatuses.CHARACTER_GROUPS_SUCCESS));
-
-    const characterGroups = response?.data;
-    dispatch(setGroups(characterGroups));
-  } catch (error) {
-    dispatch(setGroupsStatus(characterStatuses.CHARACTER_GROUPS_ERROR));
-    dispatch(setGroupsError(error));
-  }
-};
 
 export const loadCharacters = (filters) => async (dispatch) => {
   if (filters) {

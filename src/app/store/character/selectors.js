@@ -1,12 +1,6 @@
 import * as characterStatuses from './statuses';
 
 export const selectCharacterGroups = store => store.character.groups;
-export const selectCharacterGroupsIsReady = (store) => (
-  (store.character.groupsStatus === characterStatuses.CHARACTER_GROUPS_REQUEST)
-    || (store.character.groupsStatus === characterStatuses.CHARACTER_GROUPS_SUCCESS)
-    || (store.character.groupsStatus === characterStatuses.CHARACTER_GROUPS_ERROR)
-);
-
 export const selectCharacterTags = store => store.character.tags;
 
 export const selectCharactersByGroup = store => ({
