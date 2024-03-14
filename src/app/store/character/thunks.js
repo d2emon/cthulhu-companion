@@ -1,7 +1,7 @@
 import * as characterStatuses from './statuses';
 
 // API
-import { fetchCharacterGroups } from '../../../api/character/groups';
+import { fetchCharacters, pushCharacter } from '../../../api/character';
 
 // Slice
 import {
@@ -11,7 +11,6 @@ import {
   setCharactersStatus,
   setTags,
 } from './slice';
-import { fetchCharacters, pushCharacter } from '../../../api/character';
 
 export const loadCharacters = (filters) => async (dispatch) => {
   if (filters) {

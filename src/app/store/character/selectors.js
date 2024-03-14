@@ -1,20 +1,34 @@
+import { createSelector } from '@reduxjs/toolkit';
 import * as characterStatuses from './statuses';
 
-export const selectCharacterGroups = store => store.character.groups;
-export const selectCharacterTags = store => store.character.tags;
+const characterSelector = store => store.character;
 
-export const selectCharactersByGroup = store => ({
-  npc: store.character.npc,
-  pc: store.character.pc,
-});
 export const selectCharactersIsReady = (store) => (
   (store.character.charactersStatus === characterStatuses.CHARACTERS_REQUEST)
     || (store.character.charactersStatus === characterStatuses.CHARACTERS_SUCCESS)
     || (store.character.charactersStatus === characterStatuses.CHARACTERS_ERROR)
 );
 
-export const selectCharacterFilters = store => ({
-  groups: store.character.selectedGroups,
-  name: store.character.searchString,
-  tags: store.character.selectedTags,
-});
+export const selectCharacterGroups = store => store.character.groups;
+export const selectCharacterTags = store => store.character.tags;
+
+export const selectCharactersByGroup = createSelector(
+  [
+    characterSelector,
+  ],
+  (character) => ({
+    npc: character.npc,
+    pc: character.pc,
+  }),
+);
+
+export const selectCharacterFilters = createSelector(
+  [
+    characterSelector,
+  ],
+  (character) => ({
+    groups: character.selectedGroups,
+    name: character.searchString,
+    tags: character.selectedTags,
+  }),
+);
